@@ -72,7 +72,7 @@
         box-shadow: 0 0 10px #FF9500;
         border-radius: 5px;
         padding: 20px;
-        margin: 40px 10px 10px 10px; /* Added top margin to create more space */
+        margin: 40px 10px 10px 10px;
         position: relative;
     }
     
@@ -89,7 +89,7 @@
         display: flex;
         align-items: center;
         padding: 0 10px;
-        z-index: 1; /* Added z-index to ensure header stays above other elements */
+        z-index: 1;
     }
     
     .terminal-title {
@@ -126,7 +126,7 @@
         pointer-events: none;
         z-index: 9999;
     }
-    
+
     .action-btn {
         font-family: 'VT323', monospace;
         font-size: 18px;
@@ -295,6 +295,7 @@
         color: #FF9500;
         margin-top: 5px;
         text-align: center;
+        white-space: nowrap;
     }
     
     #popupContainer {
@@ -304,7 +305,7 @@
         z-index: 100;
         font-size: 14px;
     }
-    
+
     .popup-message {
         background: rgba(30, 30, 46, 0.9);
         border: 1px solid #FF9500;
@@ -332,7 +333,7 @@
     }
     
     #mainContainer {
-        margin-top: 50px; /* Changed from -150px to 50px to move content down */
+        margin-top: 50px;
         padding-top: 30px;
     }
     
@@ -844,3 +845,125 @@
                 popupContainer.appendChild(popupMessage);
                 setTimeout(() => popupMessage.remove(), 3000);
             }
+
+            async function updateProgress(action) {
+                const incrementInMilliseconds = 15 * 60 * 1000;
+                const actionRef = ref(db, `progress/${action}`);
+                const currentTime = Date.now();
+
+                const data = await get(actionRef).then(snapshot => snapshot.val());
+                let remainingTime = 24 * 60 * 60 * 1000; // Default to 24 hours
+
+                if (data) {
+                    const timeElapsed = currentTime - data.lastUpdated;
+                    remainingTime = Math.max(0, data.remainingTime - timeElapsed);
+                    remainingTime = Math.min(remainingTime + incrementInMilliseconds, 24 * 60 * 60 * 1000);
+                }
+
+                await update(actionRef, {
+                    lastUpdated: currentTime,
+                    remainingTime
+                });
+            }
+
+            function loadProgress() {
+                ["feed", "pet"].forEach(action => {
+                    const actionRef = ref(db, `progress/${action}`);
+                    onValue(actionRef, (snapshot) => {
+                        const data = snapshot.val();
+                        if (data) {
+                            const progressBar = document.getElementById(`${action}Progress`);
+                            const timeElapsed = Date.now() - data.lastUpdated;
+                            const currentRemaining = Math.max(0, data.remainingTime - timeElapsed);
+
+                            // This will make the progress bar show actual remaining time
+                            const percentage = ((currentRemaining / (24 * 60 * 60 * 1000)) * 100);
+                            progressBar.value = percentage;
+
+                            const hoursLeft = Math.floor(currentRemaining / (60 * 60 * 1000));
+                            const minutesLeft = Math.floor((currentRemaining % (60 * 60 * 1000)) / (60 * 1000));
+                            document.getElementById(`${action}TimeLeft`).innerText = `${hoursLeft}h ${minutesLeft}m left`;
+                            document.getElementById(`${action}TimeLeft2`).innerText = `${hoursLeft}h ${minutesLeft}m`;
+                        }
+                    });
+                });
+            }
+            
+            async function initializeProgressBars() {
+                const currentTime = Date.now();
+                const twelveHoursInMs = 12 * 60 * 60 * 1000;
+
+                const actions = ["feed", "pet"];
+                for (const action of actions) {
+                    const actionRef = ref(db, `progress/${action}`);
+                    const snapshot = await get(actionRef);
+                    if (!snapshot.exists()) {
+                        await set(actionRef, {
+                            lastUpdated: currentTime - twelveHoursInMs,
+                            remainingTime: 24 * 60 * 60 * 1000
+                        });
+                    }
+                }
+            }
+
+            document.getElementById("feedBtn").addEventListener("click", () => sendTransaction("feed"));
+            document.getElementById("petBtn").addEventListener("click", () => sendTransaction("pet"));
+
+            function setBonkAnimation(animationName) {
+                const modelViewer = document.getElementById("bonkViewer");
+                modelViewer.animationName = animationName;
+            }
+
+            document.getElementById("walkBtn").addEventListener("click", () => setBonkAnimation("sit"));
+            document.getElementById("runBtn").addEventListener("click", () => setBonkAnimation("bark"));
+            document.getElementById("peckBtn").addEventListener("click", () => setBonkAnimation("fetch"));
+            document.getElementById("sitBtn").addEventListener("click", () => setBonkAnimation("roll"));
+
+            function getRandomUsername() {
+                const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                let username = "User-";
+                for (let i = 0; i < 5; i++) {
+                    username += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return username;
+            }
+
+            function showRandomPopup() {
+                const actions = ["gave Bonk a treat", "pat Bonk's head"];
+                const randomAction = actions[Math.floor(Math.random() * actions.length)];
+                const username = getRandomUsername();
+
+                const popupContainer = document.getElementById("popupContainer");
+
+                const popupMessage = document.createElement("div");
+                popupMessage.className = "popup-message";
+                popupMessage.innerText = `${username} ${randomAction}`;
+
+                popupContainer.appendChild(popupMessage);
+
+                setTimeout(() => {
+                    popupMessage.remove();
+                }, 2000);
+
+                const randomInterval = Math.floor(Math.random() * (8000 - 3000 + 1)) + 3000;
+                setTimeout(showRandomPopup, randomInterval);
+            }
+
+            // Initialize everything
+            loadProgress();
+            initializeProgressBars();
+            initializeCounters();
+            showRandomPopup();
+            // Initialize doggo background
+            createDoggoBackground();
+
+            // Window resize handler for doggo background
+            window.addEventListener('resize', () => {
+                const container = document.getElementById('doggoBg');
+                container.innerHTML = '';
+                createDoggoBackground();
+            });
+        </script>
+    </div> <!-- Close mainContainer div -->
+</body>
+</html>
