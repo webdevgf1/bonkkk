@@ -24,7 +24,7 @@
     <style>
     @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
-    /* Hide main content until loading is complete */
+/* Hide main content until loading is complete */
 #mainContainer {
     opacity: 0;
     transition: opacity 0.5s ease-in-out;
@@ -89,7 +89,7 @@
     font-size: 20px;
     color: #FF9500;
     position: absolute;
-    top: 50%;
+    top: 30%;
     left: 50%;
     transform: translate(-50%, -100px);
     opacity: 0;
@@ -669,19 +669,20 @@
 </head>
 
 <body>
-    <div id="loadingOverlay">
-        <div id="loadingContent">
-            <div id="loadingModelContainer">
-                <!-- Model viewer specifically for the loading animation -->
-                <model-viewer id="loadingModel" src="https://cdn.jsdelivr.net/gh/webdevgf1/bonkkk@master/animated_dog_shiba_inu.glb"
-                    auto-rotate="false" camera-controls="false" autoplay animation-name="0|sitting_0">
-                </model-viewer>
-            </div>
-            <div id="loadingTitle"></div>
-            <div id="loadingSubtitle"></div>
-            <div id="loadingMessage">don't let me die *.* </div>
+<div id="loadingOverlay">
+    <div id="loadingContent">
+        <div id="loadingModelContainer">
+            <!-- Model viewer specifically for the loading animation -->
+            <model-viewer id="loadingModel" src="https://cdn.jsdelivr.net/gh/webdevgf1/bonkkk@master/animated_dog_shiba_inu.glb"
+                auto-rotate="false" camera-controls="false" autoplay animation-name="0|sitting_0"
+                disable-zoom disable-pan interaction-prompt="none">
+            </model-viewer>
         </div>
+        <div id="loadingTitle"></div>
+        <div id="loadingSubtitle"></div>
+        <div id="loadingMessage">don't let me die *.* </div>
     </div>
+</div>
     <!-- Doggo Background -->
     <div class="doggo-bg" id="doggoBg"></div>
     <div class="scanline"></div>
@@ -773,92 +774,84 @@
             import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
             import { getDatabase, ref, set, get, onValue, update } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-            document.addEventListener('DOMContentLoaded', () => {
-        const loadingModel = document.getElementById('loadingModel');
-        const loadingOverlay = document.getElementById('loadingOverlay');
-        const loadingTitle = document.getElementById('loadingTitle');
-        const loadingSubtitle = document.getElementById('loadingSubtitle');
-        const loadingMessage = document.getElementById('loadingMessage');
-        
-        // Ensure the model is loaded before starting the animation
-        loadingModel.addEventListener('load', () => {
-            // Start the animation sequence
-            runLoadingAnimation();
+            // Loading animation sequence
+document.addEventListener('DOMContentLoaded', () => {
+    const loadingModel = document.getElementById('loadingModel');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const loadingTitle = document.getElementById('loadingTitle');
+    const loadingSubtitle = document.getElementById('loadingSubtitle');
+    const loadingMessage = document.getElementById('loadingMessage');
+    
+    // Ensure the model is loaded before starting the animation
+    loadingModel.addEventListener('load', () => {
+        // Start the animation sequence
+        runLoadingAnimation();
+    });
+    
+    // In case the model load event doesn't fire
+    setTimeout(() => {
+        runLoadingAnimation();
+    }, 1000);
+    
+    function runLoadingAnimation() {
+        // Start typing the title immediately
+        typeText(loadingTitle, "Bonchi Bot", 50, () => {
+            // Add blinking cursor to title
+            const cursor = document.createElement('span');
+            cursor.className = 'cursor';
+            loadingTitle.appendChild(cursor);
+            
+            // Type subtitle immediately after title
+            setTimeout(() => {
+                loadingTitle.removeChild(cursor);
+                typeText(loadingSubtitle, "Bonk's official tamagotchi pet", 25, () => {
+                    // Show "don't let me die" message immediately after subtitle
+                    loadingMessage.style.opacity = 1;
+                    
+                    // Fade out the loading screen more quickly
+                    setTimeout(() => {
+                        document.getElementById('mainContainer').classList.add('visible');
+                        loadingOverlay.classList.add('hidden');
+                        
+                        // Remove the overlay after fade out
+                        setTimeout(() => {
+                            loadingOverlay.remove();
+                        }, 300);
+                    }, 1000);
+                });
+            }, 300);
         });
         
-        // In case the model load event doesn't fire
+        // Do animations in parallel with text typing
+        loadingModel.animationName = "0|shake_0";
+        
+        // After shake, do roll over more quickly
         setTimeout(() => {
-            runLoadingAnimation();
-        }, 1000);
-        
-        function runLoadingAnimation() {
-            // Step 1: Shake animation
-            loadingModel.animationName = "0|shake_0";
+            loadingModel.animationName = "0|rollover_0";
             
-            // Step 2: After shake, do roll over
+            // After roll over, return to sitting more quickly
             setTimeout(() => {
-                loadingModel.animationName = "0|rollover_0";
-                
-                // Step 3: After roll over, return to sitting
-                setTimeout(() => {
-                    loadingModel.animationName = "0|sitting_0";
-                    
-                    // Step 4: Start typing the title
-                    setTimeout(() => {
-                        typeText(loadingTitle, "Bonchi Bot", 100, () => {
-                            // Add blinking cursor to title
-                            const cursor = document.createElement('span');
-                            cursor.className = 'cursor';
-                            loadingTitle.appendChild(cursor);
-                            
-                            // Step 5: Type subtitle
-                            setTimeout(() => {
-                                loadingTitle.removeChild(cursor);
-                                typeText(loadingSubtitle, "Bonk's official tamagotchi pet", 50, () => {
-                                    // Add blinking cursor to subtitle
-                                    const subtitleCursor = document.createElement('span');
-                                    subtitleCursor.className = 'cursor';
-                                    loadingSubtitle.appendChild(subtitleCursor);
-                                    
-                                    // Step 6: Show "don't let me die" message
-                                    setTimeout(() => {
-                                        loadingSubtitle.removeChild(subtitleCursor);
-                                        loadingMessage.style.opacity = 1;
-                                        
-                                        // Step 7: Fade out the loading screen
-                                        setTimeout(() => {
-                                            document.getElementById('mainContainer').classList.add('visible');
-                                            loadingOverlay.classList.add('hidden');
-                                            
-                                            // Step 8: Remove the overlay after fade out
-                                            setTimeout(() => {
-                                                loadingOverlay.remove();
-                                            }, 500);
-                                        }, 2000);
-                                    }, 500);
-                                });
-                            }, 500);
-                        });
-                    }, 500);
-                }, 2000);  // Roll over animation time
-            }, 2000);  // Shake animation time
-        }
-        
-        // Function to create typing effect
-        function typeText(element, text, speed, callback) {
-            let i = 0;
-            function typing() {
-                if (i < text.length) {
-                    element.textContent += text.charAt(i);
-                    i++;
-                    setTimeout(typing, speed);
-                } else if (callback) {
-                    callback();
-                }
+                loadingModel.animationName = "0|sitting_0";
+            }, 1200);  // Roll over animation time reduced
+        }, 1200);  // Shake animation time reduced
+    }
+    
+    // Function to create typing effect
+    function typeText(element, text, speed, callback) {
+        element.textContent = ''; // Clear element first
+        let i = 0;
+        function typing() {
+            if (i < text.length) {
+                element.textContent += text.charAt(i);
+                i++;
+                setTimeout(typing, speed);
+            } else if (callback) {
+                callback();
             }
-            typing();
         }
-    });
+        typing();
+    }
+});
 
             // Update this with your Firebase config
             const firebaseConfig = {
