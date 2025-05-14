@@ -507,9 +507,9 @@
             </div>
 
             <!-- Model Viewer - Replace with your Shiba Inu 3D model URL -->
-            <model-viewer id="bonkViewer" src="https://cdn.jsdelivr.net/gh/yourusername/bonk@main/BONK.glb"
-                camera-controls autoplay animation-name="idle01">
-            </model-viewer>
+            <model-viewer id="bonkViewer" src="https://cdn.jsdelivr.net/gh/webdevgf1/bonkkk/animated_dog_shiba_inu.glb"
+    camera-controls autoplay animation-name="0|sitting_0">
+</model-viewer>
 
             <div class="training-interface-container">
                 <div class="progress-section">
@@ -532,10 +532,10 @@
                     </div>
                     
                     <div class="simulation-buttons">
-                        <button id="walkBtn" class="action-btn">SIT</button>
-                        <button id="runBtn" class="action-btn">BARK</button>
-                        <button id="peckBtn" class="action-btn">FETCH</button>
-                        <button id="sitBtn" class="action-btn">ROLL</button>
+                        <button id="walkBtn" class="action-btn">STAND</button>
+<button id="runBtn" class="action-btn">SHAKE</button>
+<button id="peckBtn" class="action-btn">PLAY DEAD</button>
+<button id="sitBtn" class="action-btn">ROLL OVER</button>
                     </div>
                     <div class="simulation-buttons" style="margin-top: 10px;">
                         <a href="https://twitter.com/bonktoken" target="_blank" class="action-btn social-btn">TWITTER</a>
@@ -910,14 +910,21 @@
             document.getElementById("petBtn").addEventListener("click", () => sendTransaction("pet"));
 
             function setBonkAnimation(animationName) {
-                const modelViewer = document.getElementById("bonkViewer");
-                modelViewer.animationName = animationName;
-            }
+    const modelViewer = document.getElementById("bonkViewer");
+    modelViewer.animationName = animationName;
+    
+    // If you want to reset to sitting after playing an animation:
+    if (animationName !== "0|sitting_0") {
+        setTimeout(() => {
+            modelViewer.animationName = "0|sitting_0";
+        }, 3000); // Wait 3 seconds before returning to sitting
+    }
+}
 
-            document.getElementById("walkBtn").addEventListener("click", () => setBonkAnimation("sit"));
-            document.getElementById("runBtn").addEventListener("click", () => setBonkAnimation("bark"));
-            document.getElementById("peckBtn").addEventListener("click", () => setBonkAnimation("fetch"));
-            document.getElementById("sitBtn").addEventListener("click", () => setBonkAnimation("roll"));
+            document.getElementById("walkBtn").addEventListener("click", () => setBonkAnimation("0|standing_0"));
+document.getElementById("runBtn").addEventListener("click", () => setBonkAnimation("0|shake_0"));
+document.getElementById("peckBtn").addEventListener("click", () => setBonkAnimation("0|play_dead_0"));
+document.getElementById("sitBtn").addEventListener("click", () => setBonkAnimation("0|rollover_0"));
 
             function getRandomUsername() {
                 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
