@@ -26,6 +26,11 @@ module.exports = async (req, res) => {
     You're obsessed with treats, belly rubs, and $BONK tokens. 
     You're very friendly and love making new friends. Keep responses concise (1-3 sentences).`;
     
+    // Get only user and assistant messages from conversation (remove any system messages)
+    const filteredConversation = (conversation || []).filter(
+      msg => msg.role === "user" || msg.role === "assistant"
+    );
+    
     // Call Anthropic API directly using fetch
     const anthropicResponse = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -37,12 +42,9 @@ module.exports = async (req, res) => {
       body: JSON.stringify({
         model: "claude-3-haiku-20240307",
         max_tokens: 1000,
+        system: systemPrompt, // Notice this is a top-level parameter now, not in messages
         messages: [
-          {
-            role: "system",
-            content: systemPrompt
-          },
-          ...(conversation || []),
+          ...filteredConversation,
           {
             role: "user",
             content: message
