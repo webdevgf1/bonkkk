@@ -385,14 +385,18 @@
     }
 
     .social-btn {
-        text-decoration: none;
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
-        margin-top: 15px;
-    }
+    text-decoration: none;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+    font-size: 16px; /* Slightly smaller font */
+    height: 30px; /* Reduce height */
+    width: 45%; /* Make buttons wider but not full width */
+    margin: 10px auto; /* Center buttons with some margin */
+}
     
     .social-btn:hover {
         background: #3A3A4E;
@@ -408,12 +412,12 @@
     }
     
     .simulation-buttons {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-        width: 100%;
-        margin-top: 20px;
-    }
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two equal columns instead of three */
+    gap: 15px; /* Slightly larger gap between buttons */
+    width: 100%;
+    margin-top: 20px;
+}
 
     .soundcloud-doggo {
         position: relative;
@@ -533,10 +537,9 @@
     <button id="sitBtn" class="action-btn" onclick="document.getElementById('bonkViewer').setAttribute('animation-name', '0|rollover_0');">ROLL OVER</button>
 </div>
                     <div class="simulation-buttons" style="margin-top: 10px;">
-                        <a href="https://twitter.com/bonktoken" target="_blank" class="action-btn social-btn">TWITTER</a>
-                        <a href="https://t.me/bonktoken" target="_blank" class="action-btn social-btn">TELEGRAM</a>
-                        <a href="https://pump.fun" target="_blank" class="action-btn social-btn">PUMP.FUN</a>
-                    </div>
+    <a href="https://twitter.com/bonktoken" target="_blank" class="action-btn social-btn">TWITTER</a>
+    <a href="https://letsbonk.fun/" target="_blank" class="action-btn social-btn">BUY $BONK</a>
+</div>
                 </div>
             </div>
         </div>
