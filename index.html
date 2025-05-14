@@ -1080,14 +1080,36 @@ const sendMessageBtn = document.getElementById('sendMessageBtn');
 let conversation = []; // Store conversation history
 
 // Add a message to the chat
+// Add a message to the chat with typing effect for bot messages
 function addMessage(text, isUser) {
     const messageElement = document.createElement('div');
     messageElement.classList.add('message');
     messageElement.classList.add(isUser ? 'user-message' : 'bot-message');
-    messageElement.textContent = text;
     
-    chatMessages.appendChild(messageElement);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    if (isUser) {
+        // For user messages, just display immediately
+        messageElement.textContent = text;
+        chatMessages.appendChild(messageElement);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    } else {
+        // For bot messages, add the message element first but empty
+        messageElement.textContent = "";
+        chatMessages.appendChild(messageElement);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        
+        // Then simulate typing with a delay
+        let i = 0;
+        const typingSpeed = 30; // milliseconds per character
+        const typingEffect = setInterval(() => {
+            if (i < text.length) {
+                messageElement.textContent += text.charAt(i);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                i++;
+            } else {
+                clearInterval(typingEffect);
+            }
+        }, typingSpeed);
+    }
 }
 
 // Show typing indicator
@@ -1159,9 +1181,9 @@ userInput.addEventListener('keypress', (e) => {
     }
 });
 
-// Add an initial greeting from Bonk
+// Add an initial greeting from Bonchi after a short delay
 setTimeout(() => {
-    addMessage("Woof! I'm Bonk the AI Shiba Inu! How can I help you today? *wags tail excitedly*", false);
+    addMessage("Woof! I'm Bonchi the AI Shiba Inu! How can I help you today? *wags tail excitedly*", false);
 }, 1000);
         </script>
     </div> <!-- Close mainContainer div -->
