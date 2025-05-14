@@ -783,18 +783,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingSubtitle = document.getElementById('loadingSubtitle');
     const loadingMessage = document.getElementById('loadingMessage');
     
+    // Add a flag to track if animation has started
+    let animationStarted = false;
+    
     // Ensure the model is loaded before starting the animation
     loadingModel.addEventListener('load', () => {
-        // Start the animation sequence
-        runLoadingAnimation();
+        // Only run if animation hasn't started yet
+        if (!animationStarted) {
+            animationStarted = true;
+            runLoadingAnimation();
+        }
     });
     
     // In case the model load event doesn't fire
     setTimeout(() => {
-        runLoadingAnimation();
+        // Only run if animation hasn't started yet
+        if (!animationStarted) {
+            animationStarted = true;
+            runLoadingAnimation();
+        }
     }, 1000);
     
     function runLoadingAnimation() {
+        // Make sure elements are empty before starting
+        loadingTitle.textContent = '';
+        loadingSubtitle.textContent = '';
+        
         // Start typing the title immediately
         typeText(loadingTitle, "Bonchi Bot", 50, () => {
             // Add blinking cursor to title
@@ -839,7 +853,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Function to create typing effect
     function typeText(element, text, speed, callback) {
-        element.textContent = ''; // Clear element first
+        // Make sure element is empty before starting
+        element.textContent = '';
+        
         let i = 0;
         function typing() {
             if (i < text.length) {
