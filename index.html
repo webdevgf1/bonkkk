@@ -527,11 +527,11 @@
                     </div>
                     
                     <div class="simulation-buttons">
-                        <button id="walkBtn" class="action-btn">STAND</button>
-<button id="runBtn" class="action-btn">SHAKE</button>
-<button id="peckBtn" class="action-btn">PLAY DEAD</button>
-<button id="sitBtn" class="action-btn">ROLL OVER</button>
-                    </div>
+    <button id="walkBtn" class="action-btn" onclick="document.getElementById('bonkViewer').setAttribute('animation-name', '0|standing_0');">STAND</button>
+    <button id="runBtn" class="action-btn" onclick="document.getElementById('bonkViewer').setAttribute('animation-name', '0|shake_0');">SHAKE</button>
+    <button id="peckBtn" class="action-btn" onclick="document.getElementById('bonkViewer').setAttribute('animation-name', '0|play_dead_0');">PLAY DEAD</button>
+    <button id="sitBtn" class="action-btn" onclick="document.getElementById('bonkViewer').setAttribute('animation-name', '0|rollover_0');">ROLL OVER</button>
+</div>
                     <div class="simulation-buttons" style="margin-top: 10px;">
                         <a href="https://twitter.com/bonktoken" target="_blank" class="action-btn social-btn">TWITTER</a>
                         <a href="https://t.me/bonktoken" target="_blank" class="action-btn social-btn">TELEGRAM</a>
@@ -905,46 +905,21 @@
             document.getElementById("petBtn").addEventListener("click", () => sendTransaction("pet"));
 
             function setBonkAnimation(animationName) {
-    console.log("Setting animation to:", animationName); // Add this for debugging
     const modelViewer = document.getElementById("bonkViewer");
+    modelViewer.animationName = animationName;
     
-    // Try this alternative approach:
-    try {
-        modelViewer.setAttribute('animation-name', animationName);
-        
-        // Reset to sitting after a delay
-        if (animationName !== "0|sitting_0") {
-            setTimeout(() => {
-                modelViewer.setAttribute('animation-name', "0|sitting_0");
-            }, 3000);
-        }
-    } catch(e) {
-        console.error("Animation error:", e);
+    // If you want to reset to sitting after playing an animation:
+    if (animationName !== "0|sitting_0") {
+        setTimeout(() => {
+            modelViewer.animationName = "0|sitting_0";
+        }, 3000); // Wait 3 seconds before returning to sitting
     }
 }
 
-// Make sure these are added after the DOM is loaded
-document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById("walkBtn").addEventListener("click", () => {
-        console.log("Stand button clicked");
-        setBonkAnimation("0|standing_0");
-    });
-    
-    document.getElementById("runBtn").addEventListener("click", () => {
-        console.log("Shake button clicked");
-        setBonkAnimation("0|shake_0");
-    });
-    
-    document.getElementById("peckBtn").addEventListener("click", () => {
-        console.log("Play dead button clicked");
-        setBonkAnimation("0|play_dead_0");
-    });
-    
-    document.getElementById("sitBtn").addEventListener("click", () => {
-        console.log("Roll over button clicked");
-        setBonkAnimation("0|rollover_0");
-    });
-});
+            document.getElementById("walkBtn").addEventListener("click", () => setBonkAnimation("0|standing_0"));
+document.getElementById("runBtn").addEventListener("click", () => setBonkAnimation("0|shake_0"));
+document.getElementById("peckBtn").addEventListener("click", () => setBonkAnimation("0|play_dead_0"));
+document.getElementById("sitBtn").addEventListener("click", () => setBonkAnimation("0|rollover_0"));
 
             function getRandomUsername() {
                 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
