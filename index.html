@@ -72,7 +72,7 @@
         box-shadow: 0 0 10px #FF9500;
         border-radius: 5px;
         padding: 20px;
-        margin: 10px;
+        margin: 40px 10px 10px 10px; /* Added top margin to create more space */
         position: relative;
     }
     
@@ -89,6 +89,7 @@
         display: flex;
         align-items: center;
         padding: 0 10px;
+        z-index: 1; /* Added z-index to ensure header stays above other elements */
     }
     
     .terminal-title {
@@ -331,7 +332,8 @@
     }
     
     #mainContainer {
-        margin-top: -150px;
+        margin-top: 50px; /* Changed from -150px to 50px to move content down */
+        padding-top: 30px;
     }
     
     .level-badge {
@@ -473,6 +475,9 @@
     <!-- Doggo Background -->
     <div class="doggo-bg" id="doggoBg"></div>
     <div class="scanline"></div>
+
+    <!-- Added padding div to ensure content starts below viewport top -->
+    <div style="padding-top: 40px;"></div>
 
     <div id="mainContainer">
         <!-- Wallet Connection Terminal -->
