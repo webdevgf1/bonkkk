@@ -1,5 +1,4 @@
-// /api/chat.js
-import { Configuration, AnthropicAPI } from '@anthropic-ai/sdk';
+import { AnthropicAPI } from '@anthropic-ai/sdk';
 
 export default async function handler(req, res) {
   // Set CORS headers
