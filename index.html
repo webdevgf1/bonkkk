@@ -783,4 +783,59 @@
                         { pubkey: mint, isSigner: false, isWritable: false },
                         { pubkey: solanaWeb3.SystemProgram.programId, isSigner: false, isWritable: false },
                         { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
-                        { pubkey: solanaWeb3.SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false
+                        { pubkey: solanaWeb3.SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
+                    ],
+                    programId: ASSOCIATED_TOKEN_PROGRAM_ID,
+                    data: Buffer.from([]),
+                });
+            }
+
+            function createTransferInstruction(
+                source,
+                destination,
+                owner,
+                amount,
+                multiSigners = [],
+                programId = TOKEN_PROGRAM_ID
+            ) {
+                const dataLayout = {
+                    struct: [
+                        { u8: 'instruction' },
+                        { u64: 'amount' },
+                    ]
+                };
+
+                const keys = [
+                    { pubkey: source, isSigner: false, isWritable: true },
+                    { pubkey: destination, isSigner: false, isWritable: true },
+                    { pubkey: owner, isSigner: true, isWritable: false },
+                ];
+
+                const data = Buffer.alloc(9);
+                data.writeUInt8(3); // Transfer instruction
+                data.writeBigUInt64LE(BigInt(amount), 1);
+
+                return new solanaWeb3.TransactionInstruction({
+                    keys,
+                    programId,
+                    data,
+                });
+            }
+
+            // Enhanced popup message with emojis
+            function showPopupMessage(message) {
+                const popupContainer = document.getElementById("popupContainer");
+                const popupMessage = document.createElement("div");
+                popupMessage.className = "popup-message";
+
+                // Add emojis to success messages
+                if (message.includes('treat successful')) {
+                    message = '🦴 ' + message;
+                } else if (message.includes('pat successful')) {
+                    message = '🐕 ' + message;
+                }
+
+                popupMessage.innerText = message;
+                popupContainer.appendChild(popupMessage);
+                setTimeout(() => popupMessage.remove(), 3000);
+            }
