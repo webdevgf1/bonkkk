@@ -1,0 +1,15 @@
+{
+  "name": "bonk-shiba-inu",
+  "version": "1.0.0",
+  "description": "Bonk the Shiba Inu - Interactive Pet Site",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.14.1",
+    "next": "^14.0.4"
+  }
+}
