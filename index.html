@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BonchiBot</title>
-    <link rel="icon" type="image/png" href="https://cdn.prod.website-files.com/6740d85c4e3daeef29a89470/6824c39e55bb4cb2e790e069_bonchi%20pfp%20(2).png">
+    <title>Bonk the Shiba Inu</title>
 
     <!-- Solana Wallet Adapter Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@solana/wallet-adapter-base@0.15.1/dist/index.iife.js"></script>
@@ -24,6 +23,99 @@
 
     <style>
     @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+    /* Hide main content until loading is complete */
+#mainContainer {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+#mainContainer.visible {
+    opacity: 1;
+}
+
+/* Loading Animation Styles */
+#loadingOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #1E1E2E;
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.5s ease-in-out;
+}
+
+#loadingContent {
+    text-align: center;
+    width: 100%;
+    max-width: 600px;
+    position: relative;
+}
+
+#loadingModelContainer {
+    width: 100%;
+    height: 400px;
+    margin: 0 auto;
+}
+
+#loadingModel {
+    width: 100%;
+    height: 100%;
+}
+
+#loadingTitle {
+    font-family: 'VT323', monospace;
+    font-size: 60px;
+    color: #FF9500;
+    text-shadow: 0 0 15px #FF9500;
+    margin: 20px 0 10px;
+    height: 70px;
+}
+
+#loadingSubtitle {
+    font-family: 'VT323', monospace;
+    font-size: 24px;
+    color: #FF9500;
+    text-shadow: 0 0 8px #FF9500;
+    height: 30px;
+}
+
+#loadingMessage {
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    color: #FF9500;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -100px);
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    text-shadow: 0 0 8px #FF9500;
+}
+
+.hidden {
+    opacity: 0 !important;
+    pointer-events: none;
+}
+
+/* Add a blinking cursor for typing effect */
+.cursor {
+    display: inline-block;
+    width: 10px;
+    height: 30px;
+    background-color: #FF9500;
+    margin-left: 5px;
+    animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
 
     @keyframes doggo-float {
         0% { transform: translateY(0px); }
@@ -577,6 +669,19 @@
 </head>
 
 <body>
+    <div id="loadingOverlay">
+        <div id="loadingContent">
+            <div id="loadingModelContainer">
+                <!-- Model viewer specifically for the loading animation -->
+                <model-viewer id="loadingModel" src="https://cdn.jsdelivr.net/gh/webdevgf1/bonkkk@master/animated_dog_shiba_inu.glb"
+                    auto-rotate="false" camera-controls="false" autoplay animation-name="0|sitting_0">
+                </model-viewer>
+            </div>
+            <div id="loadingTitle"></div>
+            <div id="loadingSubtitle"></div>
+            <div id="loadingMessage">don't let me die *.* </div>
+        </div>
+    </div>
     <!-- Doggo Background -->
     <div class="doggo-bg" id="doggoBg"></div>
     <div class="scanline"></div>
@@ -588,18 +693,18 @@
         <!-- Wallet Connection Terminal -->
         <div class="terminal-window">
             <div class="terminal-header">
-                <div class="terminal-title">BONCHI BOT TERMINAL</div>
+                <div class="terminal-title">AI BONK TERMINAL</div>
             </div>
             <div class="button-group">
-                <button id="connectWalletBtn" class="action-btn">CONNECT WALLET TO PLAY</button>
+                <button id="connectWalletBtn" class="action-btn">CONNECT NEURAL NETWORK</button>
                 <p id="walletAddress">Network Status: Disconnected</p>
                 <div id="trainerLevel" class="level-badge">Level 0: Neural Node Inactive</div>
-                <p id="tokenInfo" class="token-info">Required Processing Power: 10,000 $BONCHI per operation</p>
+                <p id="tokenInfo" class="token-info">Required Processing Power: 10,000 $BONK per operation</p>
             </div>
             <div class="terminal-info">
-                Bonchi Experiment 001<br>
-                Use $BONCHI tokens to train Bonchi<br>
-                If any bar reaches 0 after 24 hours & Bonchi's experiment is over but coin remains active.<br>
+                Bonk Experiment 001<br>
+                Use $BONK tokens to train Bonk<br>
+                If any bar reaches 0 after 24 hours & Bonk's experiment is over but coin remains active.<br>
                 Each Interaction extends the progress for 15minutes
             </div>
         </div>
@@ -607,7 +712,7 @@
         <!-- AI Model Viewer Terminal -->
         <div class="terminal-window">
             <div class="terminal-header">
-                <div class="terminal-title">BONCHI MODEL VISUALIZATION</div>
+                <div class="terminal-title">AI MODEL VISUALIZATION</div>
             </div>
 
             <model-viewer id="bonkViewer" src="https://cdn.jsdelivr.net/gh/webdevgf1/bonkkk@master/animated_dog_shiba_inu.glb"
@@ -641,8 +746,8 @@
     <button id="sitBtn" class="action-btn" onclick="document.getElementById('bonkViewer').setAttribute('animation-name', '0|rollover_0');">ROLL OVER</button>
 </div>
                     <div class="simulation-buttons" style="margin-top: 10px;">
-    <a href="https://x.com/bonchibot" target="_blank" class="action-btn social-btn">TWITTER</a>
-    <a href="https://letsbonk.fun/" target="_blank" class="action-btn social-btn">BUY $BONCHI</a>
+    <a href="https://twitter.com/bonktoken" target="_blank" class="action-btn social-btn">TWITTER</a>
+    <a href="https://letsbonk.fun/" target="_blank" class="action-btn social-btn">BUY $BONK</a>
 </div>
                 </div>
             </div>
@@ -653,12 +758,12 @@
 <!-- Chat Terminal -->
 <div class="terminal-window">
     <div class="terminal-header">
-        <div class="terminal-title">BONK AI CHAT INTERFACE</div>
+        <div class="terminal-title">BONCHI AI CHAT INTERFACE</div>
     </div>
     <div class="chat-container">
         <div id="chatMessages" class="chat-messages"></div>
         <div class="chat-input-container">
-            <input type="text" id="userInput" class="chat-input" placeholder="Talk to Bonk..." />
+            <input type="text" id="userInput" class="chat-input" placeholder="Talk to Bonchi..." />
             <button id="sendMessageBtn" class="action-btn chat-send-btn">SEND</button>
         </div>
     </div>
@@ -667,6 +772,93 @@
         <script type="module">
             import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
             import { getDatabase, ref, set, get, onValue, update } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+            document.addEventListener('DOMContentLoaded', () => {
+        const loadingModel = document.getElementById('loadingModel');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const loadingTitle = document.getElementById('loadingTitle');
+        const loadingSubtitle = document.getElementById('loadingSubtitle');
+        const loadingMessage = document.getElementById('loadingMessage');
+        
+        // Ensure the model is loaded before starting the animation
+        loadingModel.addEventListener('load', () => {
+            // Start the animation sequence
+            runLoadingAnimation();
+        });
+        
+        // In case the model load event doesn't fire
+        setTimeout(() => {
+            runLoadingAnimation();
+        }, 1000);
+        
+        function runLoadingAnimation() {
+            // Step 1: Shake animation
+            loadingModel.animationName = "0|shake_0";
+            
+            // Step 2: After shake, do roll over
+            setTimeout(() => {
+                loadingModel.animationName = "0|rollover_0";
+                
+                // Step 3: After roll over, return to sitting
+                setTimeout(() => {
+                    loadingModel.animationName = "0|sitting_0";
+                    
+                    // Step 4: Start typing the title
+                    setTimeout(() => {
+                        typeText(loadingTitle, "Bonchi Bot", 100, () => {
+                            // Add blinking cursor to title
+                            const cursor = document.createElement('span');
+                            cursor.className = 'cursor';
+                            loadingTitle.appendChild(cursor);
+                            
+                            // Step 5: Type subtitle
+                            setTimeout(() => {
+                                loadingTitle.removeChild(cursor);
+                                typeText(loadingSubtitle, "Bonk's official tamagotchi pet", 50, () => {
+                                    // Add blinking cursor to subtitle
+                                    const subtitleCursor = document.createElement('span');
+                                    subtitleCursor.className = 'cursor';
+                                    loadingSubtitle.appendChild(subtitleCursor);
+                                    
+                                    // Step 6: Show "don't let me die" message
+                                    setTimeout(() => {
+                                        loadingSubtitle.removeChild(subtitleCursor);
+                                        loadingMessage.style.opacity = 1;
+                                        
+                                        // Step 7: Fade out the loading screen
+                                        setTimeout(() => {
+                                            document.getElementById('mainContainer').classList.add('visible');
+                                            loadingOverlay.classList.add('hidden');
+                                            
+                                            // Step 8: Remove the overlay after fade out
+                                            setTimeout(() => {
+                                                loadingOverlay.remove();
+                                            }, 500);
+                                        }, 2000);
+                                    }, 500);
+                                });
+                            }, 500);
+                        });
+                    }, 500);
+                }, 2000);  // Roll over animation time
+            }, 2000);  // Shake animation time
+        }
+        
+        // Function to create typing effect
+        function typeText(element, text, speed, callback) {
+            let i = 0;
+            function typing() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typing, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            typing();
+        }
+    });
 
             // Update this with your Firebase config
             const firebaseConfig = {
@@ -1039,9 +1231,9 @@ document.getElementById("sitBtn").addEventListener("click", () => setBonkAnimati
             }
 
             function showRandomPopup() {
-                const actions = ["gave Bonk a treat", "pat Bonk's head"];
-                const randomAction = actions[Math.floor(Math.random() * actions.length)];
-                const username = getRandomUsername();
+    const actions = ["gave Bonchi a treat", "pat Bonchi's head"];
+    const randomAction = actions[Math.floor(Math.random() * actions.length)];
+    const username = getRandomUsername();
 
                 const popupContainer = document.getElementById("popupContainer");
 
