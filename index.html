@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Winston the Chicken</title>
+    <title>Bonk the Shiba Inu</title>
 
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
@@ -28,21 +28,24 @@
     <style>
     @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
-    @keyframes matrix {
-        0% { transform: translateY(-100%); }
-        100% { transform: translateY(100%); }
+    @keyframes doggo-float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
     }
     
     body {
         margin: 0;
-        background-color: #000;
-        color: #00FF00;
+        background-color: #1E1E2E;
+        color: #FF9500;
         font-family: 'VT323', monospace;
         overflow-x: hidden;
         position: relative;
+        background-image: radial-gradient(circle, #2A2A3E 1px, transparent 1px);
+        background-size: 20px 20px;
     }
     
-    .matrix-bg {
+    .doggo-bg {
         position: fixed;
         top: 0;
         left: 0;
@@ -53,20 +56,20 @@
         opacity: 0.15;
     }
     
-    .matrix-column {
+    .doggo-particle {
         position: absolute;
         width: 20px;
-        top: 0;
-        animation: matrix 20s linear infinite;
-        color: #00FF00;
-        text-shadow: 0 0 5px #00FF00;
-        font-size: 14px;
+        height: 20px;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23FF9500"><path d="M12 2L15 6H9L12 2Z"/></svg>');
+        background-size: contain;
+        opacity: 0.3;
+        animation: doggo-float 3s infinite ease-in-out;
     }
     
     .terminal-window {
-        background: rgba(0, 20, 0, 0.9);
-        border: 1px solid #00FF00;
-        box-shadow: 0 0 10px #00FF00;
+        background: rgba(30, 30, 46, 0.9);
+        border: 1px solid #FF9500;
+        box-shadow: 0 0 10px #FF9500;
         border-radius: 5px;
         padding: 20px;
         margin: 10px;
@@ -79,8 +82,8 @@
         left: 0;
         right: 0;
         height: 30px;
-        background: #001800;
-        border: 1px solid #00FF00;
+        background: #2A2A3E;
+        border: 1px solid #FF9500;
         border-bottom: none;
         border-radius: 5px 5px 0 0;
         display: flex;
@@ -89,21 +92,21 @@
     }
     
     .terminal-title {
-        color: #00FF00;
+        color: #FF9500;
         font-size: 14px;
         margin: 0;
     }
     
     .terminal-info {
-        color: #00FF00;
+        color: #FF9500;
         font-family: 'VT323', monospace;
         font-size: 14px;
         text-align: center;
         margin-top: 15px;
         line-height: 1.4;
-        text-shadow: 0 0 5px #00FF00;
+        text-shadow: 0 0 5px #FF9500;
         padding: 10px;
-        border-top: 1px solid rgba(0, 255, 0, 0.3);
+        border-top: 1px solid rgba(255, 149, 0, 0.3);
     }
 
     @keyframes scanline {
@@ -117,7 +120,7 @@
         left: 0;
         right: 0;
         height: 2px;
-        background: rgba(0, 255, 0, 0.1);
+        background: rgba(255, 149, 0, 0.1);
         animation: scanline 6s linear infinite;
         pointer-events: none;
         z-index: 9999;
@@ -128,30 +131,30 @@
         font-size: 18px;
         padding: 10px 20px;
         margin: 5px;
-        border: 1px solid #00FF00;
-        background: #001400;
-        color: #00FF00;
+        border: 1px solid #FF9500;
+        background: #2A2A3E;
+        color: #FF9500;
         cursor: pointer;
         transition: all 0.3s ease;
         text-transform: uppercase;
         position: relative;
         overflow: hidden;
-        text-shadow: 0 0 5px #00FF00;
-        box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        text-shadow: 0 0 5px #FF9500;
+        box-shadow: 0 0 10px rgba(255, 149, 0, 0.3);
         border-radius: 8px;
         width: 100%;
         min-width: 150px;
     }
     
     .action-btn:disabled {
-        background: #001400;
-        color: #004400;
-        border-color: #004400;
+        background: #2A2A3E;
+        color: #996633;
+        border-color: #996633;
         cursor: not-allowed;
     }
     
     .action-btn:hover:not(:disabled) {
-        background: #002800;
+        background: #3A3A4E;
         transform: scale(1.05);
     }
     
@@ -160,18 +163,18 @@
     }
     
     #connectWalletBtn {
-        background: linear-gradient(145deg, #003300, #001800);
+        background: linear-gradient(145deg, #4A2500, #2A2A3E);
     }
     
     #walletAddress {
         font-size: 14px;
-        color: #00FF00;
+        color: #FF9500;
         margin-top: 8px;
     }
     
     .token-info {
         font-size: 14px;
-        color: #00FF00;
+        color: #FF9500;
         margin-top: 4px;
         font-weight: bold;
     }
@@ -180,12 +183,12 @@
         margin: 15px 0;
         width: 100%;
         height: 25px;
-        background: rgba(0, 20, 0, 0.3);
-        border: 1px solid #00FF00;
+        background: rgba(30, 30, 46, 0.3);
+        border: 1px solid #FF9500;
         border-radius: 4px;
         position: relative;
         overflow: hidden;
-        box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+        box-shadow: 0 0 10px rgba(255, 149, 0, 0.2);
     }
     
     progress {
@@ -198,27 +201,27 @@
     }
     
     progress::-webkit-progress-bar {
-        background: rgba(0, 255, 0, 0.1);
+        background: rgba(255, 149, 0, 0.1);
         border-radius: 4px;
         background-image: repeating-linear-gradient(
             90deg,
             transparent,
             transparent 19px,
-            rgba(0, 255, 0, 0.3) 19px,
-            rgba(0, 255, 0, 0.3) 20px
+            rgba(255, 149, 0, 0.3) 19px,
+            rgba(255, 149, 0, 0.3) 20px
         );
     }
     
     progress::-webkit-progress-value {
-        background: #00FF00;
+        background: #FF9500;
         border-radius: 4px;
-        box-shadow: 0 0 15px #00FF00;
+        box-shadow: 0 0 15px #FF9500;
         background-image: repeating-linear-gradient(
             90deg,
             transparent,
             transparent 19px,
-            rgba(0, 255, 0, 1) 19px,
-            rgba(0, 255, 0, 1) 20px
+            rgba(255, 149, 0, 1) 19px,
+            rgba(255, 149, 0, 1) 20px
         );
     }
     
@@ -231,9 +234,9 @@
         bottom: 0;
         background: linear-gradient(90deg,
             transparent 0%,
-            rgba(0, 255, 0, 0.4) 50%,
+            rgba(255, 149, 0, 0.4) 50%,
             transparent 100%);
-        animation: matrix-scan 2s linear infinite;
+        animation: doggo-scan 2s linear infinite;
     }
     
     .progress-container::before {
@@ -247,32 +250,32 @@
             90deg,
             transparent,
             transparent 19px,
-            rgba(0, 255, 0, 0.1) 19px,
-            rgba(0, 255, 0, 0.1) 20px
+            rgba(255, 149, 0, 0.1) 19px,
+            rgba(255, 149, 0, 0.1) 20px
         );
     }
     
-    @keyframes matrix-flow {
+    @keyframes doggo-flow {
         0% { background-position: 0 0; }
         100% { background-position: 50px 0; }
     }
     
-    @keyframes matrix-scan {
+    @keyframes doggo-scan {
         0% { transform: translateX(-100%); }
         100% { transform: translateX(100%); }
     }
     
     .time-left {
         font-size: 14px;
-        color: #00FF00;
-        text-shadow: 0 0 8px #00FF00;
+        color: #FF9500;
+        text-shadow: 0 0 8px #FF9500;
         font-weight: bold;
         position: absolute;
         bottom: -20px;
         left: 0;
     }
     
-    #chickenViewer {
+    #bonkViewer {
         width: 100%;
         height: 400px;
         margin: 20px auto;
@@ -288,7 +291,7 @@
     
     .counter-display {
         font-size: 12px;
-        color: #00FF00;
+        color: #FF9500;
         margin-top: 5px;
         text-align: center;
     }
@@ -302,17 +305,17 @@
     }
     
     .popup-message {
-        background: rgba(0, 20, 0, 0.9);
-        border: 1px solid #00FF00;
-        color: #00FF00;
+        background: rgba(30, 30, 46, 0.9);
+        border: 1px solid #FF9500;
+        color: #FF9500;
         padding: 10px 20px;
         margin-top: 8px;
         border-radius: 20px;
-        box-shadow: 0 0 10px #00FF00;
-        animation: glitch 0.3s ease;
+        box-shadow: 0 0 10px #FF9500;
+        animation: bonk-animation 0.3s ease;
     }
     
-    @keyframes glitch {
+    @keyframes bonk-animation {
         0% { transform: translate(0); }
         20% { transform: translate(-2px, 2px); }
         40% { transform: translate(-2px, -2px); }
@@ -335,12 +338,12 @@
         position: absolute;
         top: 5px;
         right: 10px;
-        color: #00FF00;
+        color: #FF9500;
         background: transparent;
         border: none;
         padding: 2px 8px;
         font-size: 12px;
-        text-shadow: 0 0 5px #00FF00;
+        text-shadow: 0 0 5px #FF9500;
     }
     
     .training-interface-container {
@@ -355,14 +358,13 @@
     
     .progress-section {
         display: grid;
-        grid-template-columns: 1fr 1fr;  /* Changed back to equal columns */
+        grid-template-columns: 1fr 1fr;
         gap: 20px;
         align-items: start;
         max-width: 100%;
-        padding: 0 20px;  /* Add some padding */
+        padding: 0 20px;
     }
     
-    /* Add this to ensure buttons and progress bars stay within terminal */
     .training-interface-container {
         padding: 0;
         width: 100%;
@@ -377,10 +379,10 @@
     
     .counter-display {
         font-size: 12px;
-        color: #00FF00;
+        color: #FF9500;
         margin-top: 5px;
         text-align: center;
-        white-space: nowrap;  /* Prevents text from wrapping */
+        white-space: nowrap;
     }
 
     .social-btn {
@@ -394,7 +396,7 @@
     }
     
     .social-btn:hover {
-        background: #002800;
+        background: #3A3A4E;
         transform: scale(1.05);
         text-decoration: none;
     }
@@ -408,31 +410,31 @@
     
     .simulation-buttons {
         display: grid;
-        grid-template-columns: repeat(3, 1fr); /* Changed for social buttons row */
+        grid-template-columns: repeat(3, 1fr);
         gap: 10px;
         width: 100%;
         margin-top: 20px;
     }
 
-    .soundcloud-matrix {
+    .soundcloud-doggo {
         position: relative;
         max-width: 300px;
         margin: 10px auto;
-        border: 1px solid #00FF00;
+        border: 1px solid #FF9500;
         border-radius: 4px;
         overflow: hidden;
-        box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
-        background: rgba(0, 20, 0, 0.9);
+        box-shadow: 0 0 10px rgba(255, 149, 0, 0.3);
+        background: rgba(30, 30, 46, 0.9);
     }
     
-    .soundcloud-matrix iframe {
+    .soundcloud-doggo iframe {
         position: relative;
         z-index: 2;
-        filter: hue-rotate(85deg) brightness(1.2);
-        mix-blend-mode: screen;
+        filter: sepia(0.5) hue-rotate(20deg) saturate(1.5);
+        mix-blend-mode: color-dodge;
     }
     
-    .matrix-overlay {
+    .doggo-overlay {
         position: absolute;
         top: 0;
         left: 0;
@@ -440,14 +442,14 @@
         bottom: 0;
         background: linear-gradient(
             45deg,
-            rgba(0, 255, 0, 0.1),
-            rgba(0, 20, 0, 0.2)
+            rgba(255, 149, 0, 0.1),
+            rgba(30, 30, 46, 0.2)
         );
         z-index: 3;
         pointer-events: none;
     }
     
-    .soundcloud-matrix::before {
+    .soundcloud-doggo::before {
         content: '';
         position: absolute;
         top: 0;
@@ -458,151 +460,146 @@
             90deg,
             transparent 0px,
             transparent 2px,
-            rgba(0, 255, 0, 0.1) 2px,
-            rgba(0, 255, 0, 0.1) 4px
+            rgba(255, 149, 0, 0.1) 2px,
+            rgba(255, 149, 0, 0.1) 4px
         );
-        animation: matrix-scan 20s linear infinite;
+        animation: doggo-scan 20s linear infinite;
         z-index: 1;
     }
     </style>
 </head>
 
 <body>
-    <!-- Matrix Background -->
-    <div class="matrix-bg" id="matrixBg"></div>
+    <!-- Doggo Background -->
+    <div class="doggo-bg" id="doggoBg"></div>
     <div class="scanline"></div>
 
     <div id="mainContainer">
-        <!-- Wallet Connection Terminal (unchanged) -->
+        <!-- Wallet Connection Terminal -->
         <div class="terminal-window">
             <div class="terminal-header">
-                <div class="terminal-title">AI WINSTON TERMINAL</div>
+                <div class="terminal-title">AI BONK TERMINAL</div>
             </div>
             <div class="button-group">
                 <button id="connectWalletBtn" class="action-btn">CONNECT NEURAL NETWORK</button>
                 <p id="walletAddress">Network Status: Disconnected</p>
                 <div id="trainerLevel" class="level-badge">Level 0: Neural Node Inactive</div>
-                <p id="tokenInfo" class="token-info">Required Processing Power: 10,000 $WINSTONGPT per operation</p>
+                <p id="tokenInfo" class="token-info">Required Processing Power: 10,000 $BONK per operation</p>
             </div>
             <div class="terminal-info">
-            Winston Experiment 001<br>
-            Use $WinstonGPT tokens to train Winston<br>
-            If any bar reaches 0 after 24 hours & Winston's experiment is over but coin remains active.<br>
-            Each Interaction extends the progress for 15minutes
-        </div>
+                Bonk Experiment 001<br>
+                Use $BONK tokens to train Bonk<br>
+                If any bar reaches 0 after 24 hours & Bonk's experiment is over but coin remains active.<br>
+                Each Interaction extends the progress for 15minutes
+            </div>
         </div>
 
-        <!-- AI Model Viewer Terminal - Moved up -->
+        <!-- AI Model Viewer Terminal -->
         <div class="terminal-window">
             <div class="terminal-header">
                 <div class="terminal-title">AI MODEL VISUALIZATION</div>
             </div>
 
-            <!-- Model Viewer -->
-            <model-viewer id="chickenViewer" src="https://cdn.jsdelivr.net/gh/cheddariniii/chicken@main/CHICKEN.glb"
+            <!-- Model Viewer - Replace with your Shiba Inu 3D model URL -->
+            <model-viewer id="bonkViewer" src="https://cdn.jsdelivr.net/gh/yourusername/bonk@main/BONK.glb"
                 camera-controls autoplay animation-name="idle01">
             </model-viewer>
 
             <div class="training-interface-container">
-            <div class="progress-section">
-            <div class="button-group">
-            <button id="feedBtn" class="action-btn">INPUT DATA</button>
-            <div class="progress-container">
-              <progress id="feedProgress" value="100" max="100"></progress>
-              <span id="feedTimeLeft" class="time-left"></span>
+                <div class="progress-section">
+                    <div class="button-group">
+                        <button id="feedBtn" class="action-btn">GIVE TREAT</button>
+                        <div class="progress-container">
+                            <progress id="feedProgress" value="100" max="100"></progress>
+                            <span id="feedTimeLeft" class="time-left"></span>
+                        </div>
+                        <div class="counter-display">Total Treats Given: <span id="feedCounter">0</span> • Time Remaining: <span id="feedTimeLeft2"></span></div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button id="petBtn" class="action-btn">PAT HEAD</button>
+                        <div class="progress-container">
+                            <progress id="petProgress" value="100" max="100"></progress>
+                            <span id="petTimeLeft" class="time-left"></span>
+                        </div>
+                        <div class="counter-display">Total Pats: <span id="petCounter">0</span> • Time Remaining: <span id="petTimeLeft2"></span></div>
+                    </div>
+                    
+                    <div class="simulation-buttons">
+                        <button id="walkBtn" class="action-btn">SIT</button>
+                        <button id="runBtn" class="action-btn">BARK</button>
+                        <button id="peckBtn" class="action-btn">FETCH</button>
+                        <button id="sitBtn" class="action-btn">ROLL</button>
+                    </div>
+                    <div class="simulation-buttons" style="margin-top: 10px;">
+                        <a href="https://twitter.com/bonktoken" target="_blank" class="action-btn social-btn">TWITTER</a>
+                        <a href="https://t.me/bonktoken" target="_blank" class="action-btn social-btn">TELEGRAM</a>
+                        <a href="https://pump.fun" target="_blank" class="action-btn social-btn">PUMP.FUN</a>
+                    </div>
+                </div>
             </div>
-            <div class="counter-display">Total Data Inputs: <span id="feedCounter">0</span> • Time Remaining: <span id="feedTimeLeft2"></span></div>
-          </div>
-              
-          <div class="button-group">
-          <button id="petBtn" class="action-btn">OPTIMIZE</button>
-          <div class="progress-container">
-            <progress id="petProgress" value="100" max="100"></progress>
-            <span id="petTimeLeft" class="time-left"></span>
-          </div>
-          <div class="counter-display">Total Optimizations: <span id="petCounter">0</span> • Time Remaining: <span id="petTimeLeft2"></span></div>
         </div>
-          
-        <div class="simulation-buttons">
-        <button id="walkBtn" class="action-btn">SIMULATE</button>
-        <button id="runBtn" class="action-btn">OVERCLOCK</button>
-        <button id="peckBtn" class="action-btn">MINE DATA</button>
-        <button id="sitBtn" class="action-btn">PROCESS</button>
-    </div>
-    <div class="simulation-buttons" style="margin-top: 10px;">
-        <a href="https://twitter.com/winstongpttoken" target="_blank" class="action-btn social-btn">TWITTER</a>
-        <a href="https://t.me/winstongpt" target="_blank" class="action-btn social-btn">TELEGRAM</a>
-        <a href="https://pump.fun" target="_blank" class="action-btn social-btn">PUMP.FUN</a>
-    </div>
-          </div>
 
         <div id="popupContainer"></div>
+        
         <!-- Audio Interface Terminal -->
         <div class="terminal-window">
-        <div class="terminal-header">
-            <div class="terminal-title">AUDIO INTERFACE v SIMULATIONS CONTROLS ^</div>
+            <div class="terminal-header">
+                <div class="terminal-title">AUDIO INTERFACE v SIMULATIONS CONTROLS ^</div>
+            </div>
+            <div class="soundcloud-doggo">
+                <div class="doggo-overlay"></div>
+                <iframe width="100%" height="60" scrolling="no" frameborder="no" allow="autoplay"
+                    src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/6957303&color=%23FF9500&buying=false&sharing=false&download=false&show_playcount=false&show_user=false&show_comments=false&show_reposts=false&show_teaser=false">
+                </iframe>
+            </div>
         </div>
-        <div class="soundcloud-matrix">
-            <div class="matrix-overlay"></div>
-            <iframe width="100%" height="60" scrolling="no" frameborder="no" allow="autoplay"
-                src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/6957303&color=%2300ff00&buying=false&sharing=false&download=false&show_playcount=false&show_user=false&show_comments=false&show_reposts=false&show_teaser=false">
-            </iframe>
-        </div>
-    </div>
 
         <script type="module">
             import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
             import { getDatabase, ref, set, get, onValue, update } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
+            // Update this with your Firebase config
             const firebaseConfig = {
-                apiKey: "AIzaSyCxqTfEZr3nqvRsDKEVT-sZKhc07rLF9lI",
-                authDomain: "winston-e24ec.firebaseapp.com",
-                databaseURL: "https://winston-e24ec-default-rtdb.firebaseio.com",
-                projectId: "winston-e24ec",
-                storageBucket: "winston-e24ec.appspot.com",
-                messagingSenderId: "939675120454",
-                appId: "1:939675120454:web:dd4244dbdd181d220a2b47",
-                measurementId: "G-WZVSESG4F1"
+                apiKey: "YOUR_API_KEY",
+                authDomain: "bonk-app.firebaseapp.com",
+                databaseURL: "https://bonk-app-default-rtdb.firebaseio.com",
+                projectId: "bonk-app",
+                storageBucket: "bonk-app.appspot.com",
+                messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+                appId: "YOUR_APP_ID",
+                measurementId: "YOUR_MEASUREMENT_ID"
             };
+            
             const app = initializeApp(firebaseConfig);
             const db = getDatabase(app);
-            // Matrix Background Effect
-            function createMatrixBackground() {
-                const container = document.getElementById('matrixBg');
+            
+            // Doggo Background Effect
+            function createDoggoBackground() {
+                const container = document.getElementById('doggoBg');
                 const width = window.innerWidth;
-                const columns = Math.floor(width / 20);
+                const height = window.innerHeight;
+                const particleCount = Math.floor(width * height / 10000);
 
-                for (let i = 0; i < columns; i++) {
-                    const column = document.createElement('div');
-                    column.className = 'matrix-column';
-                    column.style.left = (i * 20) + 'px';
-                    column.innerHTML = createMatrixString();
-                    container.appendChild(column);
-                    column.style.animationDelay = (Math.random() * 20) + 's';
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'doggo-particle';
+                    particle.style.left = Math.random() * width + 'px';
+                    particle.style.top = Math.random() * height + 'px';
+                    particle.style.animationDelay = (Math.random() * 5) + 's';
+                    container.appendChild(particle);
                 }
-            }
-
-            function createMatrixString() {
-                const length = Math.floor(Math.random() * 20) + 20;
-                let result = '';
-                for (let i = 0; i < length; i++) {
-                    const char = Math.random() > 0.5 ?
-                        String.fromCharCode(0x30A0 + Math.random() * 96) :
-                        Math.random().toString(2).substr(2, 1);
-                    result += char + '<br>';
-                }
-                return result;
             }
 
             // Trainer Level System
             const TRAINER_LEVELS = {
                 0: 'Neural Node Inactive',
-                1: 'Neural Node Initiate',
-                5: 'Data Facilitator',
-                10: 'Network Architect',
-                25: 'AI Supervisor',
-                50: 'System Administrator',
-                100: 'Neural Network Master'
+                1: 'Shiba Inu Cadet',
+                5: 'Treat Distributor',
+                10: 'Doggo Whisperer',
+                25: 'Shiba Trainer',
+                50: 'Doge Commander',
+                100: 'Bonk Master'
             };
 
             async function updateTrainerLevel(totalInteractions) {
@@ -613,18 +610,18 @@
 
                 const levelDisplay = document.getElementById('trainerLevel');
                 levelDisplay.innerText = `Level ${level}: ${TRAINER_LEVELS[level]}`;
-                levelDisplay.style.textShadow = `0 0 ${level * 2}px #00FF00`;
+                levelDisplay.style.textShadow = `0 0 ${level * 2}px #FF9500`;
             }
 
             const connection = new solanaWeb3.Connection("https://small-fabled-sound.solana-mainnet.quiknode.pro/67aea8bbb493e8b02d169b526c52eda88a5f4a59/", "confirmed");
             let wallet;
 
-            // Token constants
+            // Token constants - Update with Bonk token details
             const TOKEN_PROGRAM_ID = new solanaWeb3.PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
             const ASSOCIATED_TOKEN_PROGRAM_ID = new solanaWeb3.PublicKey("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL");
-            const TOKEN_MINT = new solanaWeb3.PublicKey("9P7RzMcuhahwDdq5iLWAMdFzc5mjgGWjyzAB65ZrXqPx");
-            const RECIPIENT = new solanaWeb3.PublicKey("6e2MA2epAMdW15rBW8ioHubCWKj2mg32DP49RwkBhHWN");
-            const AMOUNT = 1000000000;
+            const TOKEN_MINT = new solanaWeb3.PublicKey("DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"); // Replace with BONK token mint
+            const RECIPIENT = new solanaWeb3.PublicKey("YOUR_WALLET_ADDRESS"); // Replace with your wallet address
+            const AMOUNT = 1000000000; // Adjust based on BONK decimals
 
             // Initialize counters in Firebase
             async function initializeCounters() {
@@ -644,8 +641,6 @@
                     if (data) {
                         document.getElementById('feedCounter').innerText = data.feeds || 0;
                         document.getElementById('petCounter').innerText = data.pets || 0;
-                        document.getElementById('totalProcessing').innerText =
-                            `${((data.feeds || 0) + (data.pets || 0))} WINSTON`;
 
                         // Update trainer level if wallet is connected
                         if (wallet && wallet.publicKey) {
@@ -788,181 +783,4 @@
                         { pubkey: mint, isSigner: false, isWritable: false },
                         { pubkey: solanaWeb3.SystemProgram.programId, isSigner: false, isWritable: false },
                         { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
-                        { pubkey: solanaWeb3.SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
-                    ],
-                    programId: ASSOCIATED_TOKEN_PROGRAM_ID,
-                    data: Buffer.from([]),
-                });
-            }
-
-            function createTransferInstruction(
-                source,
-                destination,
-                owner,
-                amount,
-                multiSigners = [],
-                programId = TOKEN_PROGRAM_ID
-            ) {
-                const dataLayout = {
-                    struct: [
-                        { u8: 'instruction' },
-                        { u64: 'amount' },
-                    ]
-                };
-
-                const keys = [
-                    { pubkey: source, isSigner: false, isWritable: true },
-                    { pubkey: destination, isSigner: false, isWritable: true },
-                    { pubkey: owner, isSigner: true, isWritable: false },
-                ];
-
-                const data = Buffer.alloc(9);
-                data.writeUInt8(3); // Transfer instruction
-                data.writeBigUInt64LE(BigInt(amount), 1);
-
-                return new solanaWeb3.TransactionInstruction({
-                    keys,
-                    programId,
-                    data,
-                });
-            }
-
-            // Enhanced popup message with emojis
-            function showPopupMessage(message) {
-                const popupContainer = document.getElementById("popupContainer");
-                const popupMessage = document.createElement("div");
-                popupMessage.className = "popup-message";
-
-                // Add emojis to success messages
-                if (message.includes('input data successful')) {
-                    message = '🍞 ' + message;
-                } else if (message.includes('optimize successful')) {
-                    message = '❤️ ' + message;
-                }
-
-                popupMessage.innerText = message;
-                popupContainer.appendChild(popupMessage);
-                setTimeout(() => popupMessage.remove(), 3000);
-            }
-
-            async function updateProgress(action) {
-                const incrementInMilliseconds = 15 * 60 * 1000;
-                const actionRef = ref(db, `progress/${action}`);
-                const currentTime = Date.now();
-
-                const data = await get(actionRef).then(snapshot => snapshot.val());
-                let remainingTime = 24 * 60 * 60 * 1000; // Default to 24 hours
-
-                if (data) {
-                    const timeElapsed = currentTime - data.lastUpdated;
-                    remainingTime = Math.max(0, data.remainingTime - timeElapsed);
-                    remainingTime = Math.min(remainingTime + incrementInMilliseconds, 24 * 60 * 60 * 1000);
-                }
-
-                await update(actionRef, {
-                    lastUpdated: currentTime,
-                    remainingTime
-                });
-            }
-
-function loadProgress() {
-    ["feed", "pet"].forEach(action => {
-        const actionRef = ref(db, `progress/${action}`);
-        onValue(actionRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                const progressBar = document.getElementById(`${action}Progress`);
-                const timeElapsed = Date.now() - data.lastUpdated;
-                const currentRemaining = Math.max(0, data.remainingTime - timeElapsed);
-
-                // This will make the green part show actual remaining time
-                const percentage = ((currentRemaining / (24 * 60 * 60 * 1000)) * 100);
-                progressBar.value = percentage;
-
-                const hoursLeft = Math.floor(currentRemaining / (60 * 60 * 1000));
-                const minutesLeft = Math.floor((currentRemaining % (60 * 60 * 1000)) / (60 * 1000));
-                document.getElementById(`${action}TimeLeft`).innerText = `${hoursLeft}h ${minutesLeft}m left`;
-                document.getElementById(`${action}TimeLeft2`).innerText = `${hoursLeft}h ${minutesLeft}m`;
-            }
-        });
-    });
-}
-            async function initializeProgressBars() {
-                const currentTime = Date.now();
-                const twelveHoursInMs = 12 * 60 * 60 * 1000;
-
-                const actions = ["feed", "pet"];
-                for (const action of actions) {
-                    const actionRef = ref(db, `progress/${action}`);
-                    const snapshot = await get(actionRef);
-                    if (!snapshot.exists()) {
-                        await set(actionRef, {
-                            lastUpdated: currentTime - twelveHoursInMs,
-                            remainingTime: 24 * 60 * 60 * 1000
-                        });
-                    }
-                }
-            }
-
-            document.getElementById("feedBtn").addEventListener("click", () => sendTransaction("feed"));
-            document.getElementById("petBtn").addEventListener("click", () => sendTransaction("pet"));
-
-            function setChickenAnimation(animationName) {
-                const modelViewer = document.getElementById("chickenViewer");
-                modelViewer.animationName = animationName;
-            }
-
-            document.getElementById("walkBtn").addEventListener("click", () => setChickenAnimation("walk01"));
-            document.getElementById("runBtn").addEventListener("click", () => setChickenAnimation("run01"));
-            document.getElementById("peckBtn").addEventListener("click", () => setChickenAnimation("idle01"));
-            document.getElementById("sitBtn").addEventListener("click", () => setChickenAnimation("chicken_squat_cycle01"));
-
-            function getRandomUsername() {
-                const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-                let username = "User-";
-                for (let i = 0; i < 5; i++) {
-                    username += chars.charAt(Math.floor(Math.random() * chars.length));
-                }
-                return username;
-            }
-
-            function showRandomPopup() {
-                const actions = ["fed Winston", "pet Winston"];
-                const randomAction = actions[Math.floor(Math.random() * actions.length)];
-                const username = getRandomUsername();
-
-                const popupContainer = document.getElementById("popupContainer");
-
-                const popupMessage = document.createElement("div");
-                popupMessage.className = "popup-message";
-                popupMessage.innerText = `${username} ${randomAction}`;
-
-                popupContainer.appendChild(popupMessage);
-
-                setTimeout(() => {
-                    popupMessage.remove();
-                }, 2000);
-
-                const randomInterval = Math.floor(Math.random() * (8000 - 3000 + 1)) + 3000;
-                setTimeout(showRandomPopup, randomInterval);
-            }
-
-            // Initialize everything
-            loadProgress();
-            initializeProgressBars();
-            initializeCounters();
-            showRandomPopup();
-            // Initialize matrix background
-            createMatrixBackground();
-
-            // Window resize handler for matrix background
-            window.addEventListener('resize', () => {
-                const container = document.getElementById('matrixBg');
-                container.innerHTML = '';
-                createMatrixBackground();
-            });
-        </script>
-
-</body>
-
-</html>
+                        { pubkey: solanaWeb3.SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false
