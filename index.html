@@ -50,6 +50,45 @@
     transition: opacity 0.5s ease-in-out;
 }
 
+.ca-info {
+    font-size: 12px;
+    margin-top: 4px;
+    display: inline-block;
+}
+
+.copy-text {
+    cursor: pointer;
+    border-bottom: 1px dashed #FF9500;
+    transition: all 0.2s ease;
+    position: relative;
+    padding: 2px 4px;
+}
+
+.copy-text:hover {
+    background-color: rgba(255, 149, 0, 0.2);
+}
+
+.copy-tooltip {
+    position: fixed;
+    background: rgba(30, 30, 46, 0.9);
+    color: #FF9500;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.2s ease;
+    z-index: 9999;
+    border: 1px solid #FF9500;
+    box-shadow: 0 0 5px #FF9500;
+}
+
+.copy-tooltip.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 #loadingContent {
     text-align: center;
     width: 100%;
@@ -712,7 +751,11 @@
                 <button id="connectWalletBtn" class="action-btn">CONNECT WALLET TO PLAY</button>
                 <p id="walletAddress">Network Status: Disconnected</p>
                 <div id="trainerLevel" class="level-badge">Level 0: Neural Node Inactive</div>
-                <p id="tokenInfo" class="token-info">Required Processing Power: 10,000 $BONCHI per operation</p>
+                <p id="tokenInfo" class="token-info">
+    Required Processing Power: 10,000 $BONCHI per operation<br>
+    <span class="ca-info">CA: <span id="copyCA" class="copy-text">SOON</span></span>
+</p>
+<div id="copyTooltip" class="copy-tooltip">Copied!</div>
             </div>
             <div class="terminal-info">
                 Bonchi Experiment 001<br>
@@ -1399,6 +1442,31 @@ userInput.addEventListener('keypress', (e) => {
 setTimeout(() => {
     addMessage("Woof! I'm Bonchi the AI Shiba Inu! How can I help you today? *wags tail excitedly*", false);
 }, 1000);
+
+document.addEventListener('DOMContentLoaded', () => {
+    const copyElement = document.getElementById('copyCA');
+    const tooltip = document.getElementById('copyTooltip');
+    
+    if (copyElement && tooltip) {
+        copyElement.addEventListener('click', (e) => {
+            // Copy the text to clipboard
+            const textToCopy = copyElement.textContent;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                // Show tooltip near cursor
+                tooltip.style.left = (e.clientX + 10) + 'px';
+                tooltip.style.top = (e.clientY - 20) + 'px';
+                tooltip.classList.add('show');
+                
+                // Hide tooltip after a short delay
+                setTimeout(() => {
+                    tooltip.classList.remove('show');
+                }, 1500);
+            }).catch(err => {
+                console.error('Could not copy text: ', err);
+            });
+        });
+    }
+});
         </script>
     </div> <!-- Close mainContainer div -->
 </body>
