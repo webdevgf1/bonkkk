@@ -1,6 +1,4 @@
-import { AnthropicAPI } from '@anthropic-ai/sdk';
-
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   // Set CORS headers
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -15,8 +13,7 @@ export default async function handler(req, res) {
 
   // Only allow POST requests
   if (req.method !== 'POST') {
-    res.status(405).json({ error: 'Method not allowed' });
-    return;
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
@@ -29,30 +26,45 @@ export default async function handler(req, res) {
     You're obsessed with treats, belly rubs, and $BONK tokens. 
     You're very friendly and love making new friends. Keep responses concise (1-3 sentences).`;
     
-    const anthropic = new AnthropicAPI({
-      apiKey: process.env.ANTHROPIC_API_KEY,
-    });
-
-    const response = await anthropic.messages.create({
-      model: "claude-3-haiku-20240307",
-      max_tokens: 1000,
-      messages: [
-        {
-          role: "system",
-          content: systemPrompt
-        },
-        ...conversation,
-        {
-          role: "user",
-          content: message
-        }
-      ],
-      temperature: 0.9
+    // Call Anthropic API directly using fetch
+    const anthropicResponse = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': process.env.ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: "claude-3-haiku-20240307",
+        max_tokens: 1000,
+        messages: [
+          {
+            role: "system",
+            content: systemPrompt
+          },
+          ...(conversation || []),
+          {
+            role: "user",
+            content: message
+          }
+        ],
+        temperature: 0.9
+      })
     });
     
-    res.status(200).json({ response: response.content[0].text });
+    if (!anthropicResponse.ok) {
+      const errorData = await anthropicResponse.text();
+      throw new Error(`Anthropic API error: ${errorData}`);
+    }
+    
+    const data = await anthropicResponse.json();
+    
+    return res.status(200).json({ response: data.content[0].text });
   } catch (error) {
     console.error('Error:', error);
-    res.status(500).json({ error: 'Failed to get response from Anthropic API' });
+    return res.status(500).json({ 
+      error: 'Failed to get response from Anthropic API',
+      message: error.message
+    });
   }
-}
+};
