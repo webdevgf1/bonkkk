@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Winston the Chicken</title>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
+
+    <!-- Solana Wallet Adapter Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@solana/wallet-adapter-base@0.15.1/dist/index.iife.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@solana/wallet-adapter-react@0.15.1/dist/index.iife.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@solana/wallet-adapter-wallets@0.15.1/dist/index.iife.js"></script>
+    <script src="https://unpkg.com/@solana/web3.js@1.73.0/lib/index.iife.min.js"></script>
+    <script src="https://unpkg.com/@solana/spl-token@0.3.8/lib/index.iife.min.js"></script>
+
+    <script type="module">
+        import { Buffer } from 'https://cdn.jsdelivr.net/npm/buffer@6.0.3/+esm';
+        window.Buffer = Buffer;
+    </script>
+
+    <!-- Model Viewer Library -->
+    <script type="module" src="https://unpkg.com/@google/model-viewer@latest/dist/model-viewer.min.js"></script>
+
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+    @keyframes matrix {
+        0% { transform: translateY(-100%); }
+        100% { transform: translateY(100%); }
+    }
+    
+    body {
+        margin: 0;
+        background-color: #000;
+        color: #00FF00;
+        font-family: 'VT323', monospace;
+        overflow-x: hidden;
+        position: relative;
+    }
+    
+    .matrix-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        z-index: -1;
+        opacity: 0.15;
+    }
+    
+    .matrix-column {
+        position: absolute;
+        width: 20px;
+        top: 0;
+        animation: matrix 20s linear infinite;
+        color: #00FF00;
+        text-shadow: 0 0 5px #00FF00;
+        font-size: 14px;
+    }
+    
+    .terminal-window {
+        background: rgba(0, 20, 0, 0.9);
+        border: 1px solid #00FF00;
+        box-shadow: 0 0 10px #00FF00;
+        border-radius: 5px;
+        padding: 20px;
+        margin: 10px;
+        position: relative;
+    }
+    
+    .terminal-header {
+        position: absolute;
+        top: -30px;
+        left: 0;
+        right: 0;
+        height: 30px;
+        background: #001800;
+        border: 1px solid #00FF00;
+        border-bottom: none;
+        border-radius: 5px 5px 0 0;
+        display: flex;
+        align-items: center;
+        padding: 0 10px;
+    }
+    
+    .terminal-title {
+        color: #00FF00;
+        font-size: 14px;
+        margin: 0;
+    }
+    
+    .terminal-info {
+        color: #00FF00;
+        font-family: 'VT323', monospace;
+        font-size: 14px;
+        text-align: center;
+        margin-top: 15px;
+        line-height: 1.4;
+        text-shadow: 0 0 5px #00FF00;
+        padding: 10px;
+        border-top: 1px solid rgba(0, 255, 0, 0.3);
+    }
+
+    @keyframes scanline {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(100vh); }
+    }
+    
+    .scanline {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: rgba(0, 255, 0, 0.1);
+        animation: scanline 6s linear infinite;
+        pointer-events: none;
+        z-index: 9999;
+    }
+    
+    .action-btn {
+        font-family: 'VT323', monospace;
+        font-size: 18px;
+        padding: 10px 20px;
+        margin: 5px;
+        border: 1px solid #00FF00;
+        background: #001400;
+        color: #00FF00;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        position: relative;
+        overflow: hidden;
+        text-shadow: 0 0 5px #00FF00;
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        border-radius: 8px;
+        width: 100%;
+        min-width: 150px;
+    }
+    
+    .action-btn:disabled {
+        background: #001400;
+        color: #004400;
+        border-color: #004400;
+        cursor: not-allowed;
+    }
+    
+    .action-btn:hover:not(:disabled) {
+        background: #002800;
+        transform: scale(1.05);
+    }
+    
+    .action-btn:active {
+        transform: scale(1.02);
+    }
+    
+    #connectWalletBtn {
+        background: linear-gradient(145deg, #003300, #001800);
+    }
+    
+    #walletAddress {
+        font-size: 14px;
+        color: #00FF00;
+        margin-top: 8px;
+    }
+    
+    .token-info {
+        font-size: 14px;
+        color: #00FF00;
+        margin-top: 4px;
+        font-weight: bold;
+    }
+    
+    .progress-container {
+        margin: 15px 0;
+        width: 100%;
+        height: 25px;
+        background: rgba(0, 20, 0, 0.3);
+        border: 1px solid #00FF00;
+        border-radius: 4px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+    }
+    
+    progress {
+        width: 100%;
+        height: 100%;
+        -webkit-appearance: none;
+        appearance: none;
+        border: none;
+        background: transparent;
+    }
+    
+    progress::-webkit-progress-bar {
+        background: rgba(0, 255, 0, 0.1);
+        border-radius: 4px;
+        background-image: repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 19px,
+            rgba(0, 255, 0, 0.3) 19px,
+            rgba(0, 255, 0, 0.3) 20px
+        );
+    }
+    
+    progress::-webkit-progress-value {
+        background: #00FF00;
+        border-radius: 4px;
+        box-shadow: 0 0 15px #00FF00;
+        background-image: repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 19px,
+            rgba(0, 255, 0, 1) 19px,
+            rgba(0, 255, 0, 1) 20px
+        );
+    }
+    
+    .progress-container::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(0, 255, 0, 0.4) 50%,
+            transparent 100%);
+        animation: matrix-scan 2s linear infinite;
+    }
+    
+    .progress-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 19px,
+            rgba(0, 255, 0, 0.1) 19px,
+            rgba(0, 255, 0, 0.1) 20px
+        );
+    }
+    
+    @keyframes matrix-flow {
+        0% { background-position: 0 0; }
+        100% { background-position: 50px 0; }
+    }
+    
+    @keyframes matrix-scan {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+    
+    .time-left {
+        font-size: 14px;
+        color: #00FF00;
+        text-shadow: 0 0 8px #00FF00;
+        font-weight: bold;
+        position: absolute;
+        bottom: -20px;
+        left: 0;
+    }
+    
+    #chickenViewer {
+        width: 100%;
+        height: 400px;
+        margin: 20px auto;
+    }
+    
+    .button-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin: 10px 0;
+    }
+    
+    .counter-display {
+        font-size: 12px;
+        color: #00FF00;
+        margin-top: 5px;
+        text-align: center;
+    }
+    
+    #popupContainer {
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
+        z-index: 100;
+        font-size: 14px;
+    }
+    
+    .popup-message {
+        background: rgba(0, 20, 0, 0.9);
+        border: 1px solid #00FF00;
+        color: #00FF00;
+        padding: 10px 20px;
+        margin-top: 8px;
+        border-radius: 20px;
+        box-shadow: 0 0 10px #00FF00;
+        animation: glitch 0.3s ease;
+    }
+    
+    @keyframes glitch {
+        0% { transform: translate(0); }
+        20% { transform: translate(-2px, 2px); }
+        40% { transform: translate(-2px, -2px); }
+        60% { transform: translate(2px, 2px); }
+        80% { transform: translate(2px, -2px); }
+        100% { transform: translate(0); }
+    }
+    
+    .soundcloud-player {
+        max-width: 300px;
+        height: 60px;
+        margin: 10px auto;
+    }
+    
+    #mainContainer {
+        margin-top: -150px;
+    }
+    
+    .level-badge {
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        color: #00FF00;
+        background: transparent;
+        border: none;
+        padding: 2px 8px;
+        font-size: 12px;
+        text-shadow: 0 0 5px #00FF00;
+    }
+    
+    .training-interface-container {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 20px;
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .progress-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;  /* Changed back to equal columns */
+        gap: 20px;
+        align-items: start;
+        max-width: 100%;
+        padding: 0 20px;  /* Add some padding */
+    }
+    
+    /* Add this to ensure buttons and progress bars stay within terminal */
+    .training-interface-container {
+        padding: 0;
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .progress-container {
+        margin: 15px 0;
+        width: 100%;
+        height: 25px;
+    }
+    
+    .counter-display {
+        font-size: 12px;
+        color: #00FF00;
+        margin-top: 5px;
+        text-align: center;
+        white-space: nowrap;  /* Prevents text from wrapping */
+    }
+
+    .social-btn {
+        text-decoration: none;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        margin-top: 15px;
+    }
+    
+    .social-btn:hover {
+        background: #002800;
+        transform: scale(1.05);
+        text-decoration: none;
+    }
+    
+    .action-btn {
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .simulation-buttons {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* Changed for social buttons row */
+        gap: 10px;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .soundcloud-matrix {
+        position: relative;
+        max-width: 300px;
+        margin: 10px auto;
+        border: 1px solid #00FF00;
+        border-radius: 4px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        background: rgba(0, 20, 0, 0.9);
+    }
+    
+    .soundcloud-matrix iframe {
+        position: relative;
+        z-index: 2;
+        filter: hue-rotate(85deg) brightness(1.2);
+        mix-blend-mode: screen;
+    }
+    
+    .matrix-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+            45deg,
+            rgba(0, 255, 0, 0.1),
+            rgba(0, 20, 0, 0.2)
+        );
+        z-index: 3;
+        pointer-events: none;
+    }
+    
+    .soundcloud-matrix::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: repeating-linear-gradient(
+            90deg,
+            transparent 0px,
+            transparent 2px,
+            rgba(0, 255, 0, 0.1) 2px,
+            rgba(0, 255, 0, 0.1) 4px
+        );
+        animation: matrix-scan 20s linear infinite;
+        z-index: 1;
+    }
+    </style>
+</head>
+
+<body>
+    <!-- Matrix Background -->
+    <div class="matrix-bg" id="matrixBg"></div>
+    <div class="scanline"></div>
+
+    <div id="mainContainer">
+        <!-- Wallet Connection Terminal (unchanged) -->
+        <div class="terminal-window">
+            <div class="terminal-header">
+                <div class="terminal-title">AI WINSTON TERMINAL</div>
+            </div>
+            <div class="button-group">
+                <button id="connectWalletBtn" class="action-btn">CONNECT NEURAL NETWORK</button>
+                <p id="walletAddress">Network Status: Disconnected</p>
+                <div id="trainerLevel" class="level-badge">Level 0: Neural Node Inactive</div>
+                <p id="tokenInfo" class="token-info">Required Processing Power: 10,000 $WINSTONGPT per operation</p>
+            </div>
+            <div class="terminal-info">
+            Winston Experiment 001<br>
+            Use $WinstonGPT tokens to train Winston<br>
+            If any bar reaches 0 after 24 hours & Winston's experiment is over but coin remains active.<br>
+            Each Interaction extends the progress for 15minutes
+        </div>
+        </div>
+
+        <!-- AI Model Viewer Terminal - Moved up -->
+        <div class="terminal-window">
+            <div class="terminal-header">
+                <div class="terminal-title">AI MODEL VISUALIZATION</div>
+            </div>
+
+            <!-- Model Viewer -->
+            <model-viewer id="chickenViewer" src="https://cdn.jsdelivr.net/gh/cheddariniii/chicken@main/CHICKEN.glb"
+                camera-controls autoplay animation-name="idle01">
+            </model-viewer>
+
+            <div class="training-interface-container">
+            <div class="progress-section">
+            <div class="button-group">
+            <button id="feedBtn" class="action-btn">INPUT DATA</button>
+            <div class="progress-container">
+              <progress id="feedProgress" value="100" max="100"></progress>
+              <span id="feedTimeLeft" class="time-left"></span>
+            </div>
+            <div class="counter-display">Total Data Inputs: <span id="feedCounter">0</span> • Time Remaining: <span id="feedTimeLeft2"></span></div>
+          </div>
+              
+          <div class="button-group">
+          <button id="petBtn" class="action-btn">OPTIMIZE</button>
+          <div class="progress-container">
+            <progress id="petProgress" value="100" max="100"></progress>
+            <span id="petTimeLeft" class="time-left"></span>
+          </div>
+          <div class="counter-display">Total Optimizations: <span id="petCounter">0</span> • Time Remaining: <span id="petTimeLeft2"></span></div>
+        </div>
+          
+        <div class="simulation-buttons">
+        <button id="walkBtn" class="action-btn">SIMULATE</button>
+        <button id="runBtn" class="action-btn">OVERCLOCK</button>
+        <button id="peckBtn" class="action-btn">MINE DATA</button>
+        <button id="sitBtn" class="action-btn">PROCESS</button>
+    </div>
+    <div class="simulation-buttons" style="margin-top: 10px;">
+        <a href="https://twitter.com/winstongpttoken" target="_blank" class="action-btn social-btn">TWITTER</a>
+        <a href="https://t.me/winstongpt" target="_blank" class="action-btn social-btn">TELEGRAM</a>
+        <a href="https://pump.fun" target="_blank" class="action-btn social-btn">PUMP.FUN</a>
+    </div>
+          </div>
+
+        <div id="popupContainer"></div>
+        <!-- Audio Interface Terminal -->
+        <div class="terminal-window">
+        <div class="terminal-header">
+            <div class="terminal-title">AUDIO INTERFACE v SIMULATIONS CONTROLS ^</div>
+        </div>
+        <div class="soundcloud-matrix">
+            <div class="matrix-overlay"></div>
+            <iframe width="100%" height="60" scrolling="no" frameborder="no" allow="autoplay"
+                src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/6957303&color=%2300ff00&buying=false&sharing=false&download=false&show_playcount=false&show_user=false&show_comments=false&show_reposts=false&show_teaser=false">
+            </iframe>
+        </div>
+    </div>
+
+        <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+            import { getDatabase, ref, set, get, onValue, update } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+            const firebaseConfig = {
+                apiKey: "AIzaSyCxqTfEZr3nqvRsDKEVT-sZKhc07rLF9lI",
+                authDomain: "winston-e24ec.firebaseapp.com",
+                databaseURL: "https://winston-e24ec-default-rtdb.firebaseio.com",
+                projectId: "winston-e24ec",
+                storageBucket: "winston-e24ec.appspot.com",
+                messagingSenderId: "939675120454",
+                appId: "1:939675120454:web:dd4244dbdd181d220a2b47",
+                measurementId: "G-WZVSESG4F1"
+            };
+            const app = initializeApp(firebaseConfig);
+            const db = getDatabase(app);
+            // Matrix Background Effect
+            function createMatrixBackground() {
+                const container = document.getElementById('matrixBg');
+                const width = window.innerWidth;
+                const columns = Math.floor(width / 20);
+
+                for (let i = 0; i < columns; i++) {
+                    const column = document.createElement('div');
+                    column.className = 'matrix-column';
+                    column.style.left = (i * 20) + 'px';
+                    column.innerHTML = createMatrixString();
+                    container.appendChild(column);
+                    column.style.animationDelay = (Math.random() * 20) + 's';
+                }
+            }
+
+            function createMatrixString() {
+                const length = Math.floor(Math.random() * 20) + 20;
+                let result = '';
+                for (let i = 0; i < length; i++) {
+                    const char = Math.random() > 0.5 ?
+                        String.fromCharCode(0x30A0 + Math.random() * 96) :
+                        Math.random().toString(2).substr(2, 1);
+                    result += char + '<br>';
+                }
+                return result;
+            }
+
+            // Trainer Level System
+            const TRAINER_LEVELS = {
+                0: 'Neural Node Inactive',
+                1: 'Neural Node Initiate',
+                5: 'Data Facilitator',
+                10: 'Network Architect',
+                25: 'AI Supervisor',
+                50: 'System Administrator',
+                100: 'Neural Network Master'
+            };
+
+            async function updateTrainerLevel(totalInteractions) {
+                const level = Object.keys(TRAINER_LEVELS)
+                    .map(Number)
+                    .reverse()
+                    .find(threshold => totalInteractions >= threshold) || 0;
+
+                const levelDisplay = document.getElementById('trainerLevel');
+                levelDisplay.innerText = `Level ${level}: ${TRAINER_LEVELS[level]}`;
+                levelDisplay.style.textShadow = `0 0 ${level * 2}px #00FF00`;
+            }
+
+            const connection = new solanaWeb3.Connection("https://small-fabled-sound.solana-mainnet.quiknode.pro/67aea8bbb493e8b02d169b526c52eda88a5f4a59/", "confirmed");
+            let wallet;
+
+            // Token constants
+            const TOKEN_PROGRAM_ID = new solanaWeb3.PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+            const ASSOCIATED_TOKEN_PROGRAM_ID = new solanaWeb3.PublicKey("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL");
+            const TOKEN_MINT = new solanaWeb3.PublicKey("9P7RzMcuhahwDdq5iLWAMdFzc5mjgGWjyzAB65ZrXqPx");
+            const RECIPIENT = new solanaWeb3.PublicKey("6e2MA2epAMdW15rBW8ioHubCWKj2mg32DP49RwkBhHWN");
+            const AMOUNT = 1000000000;
+
+            // Initialize counters in Firebase
+            async function initializeCounters() {
+                const countersRef = ref(db, 'counters');
+                const snapshot = await get(countersRef);
+                if (!snapshot.exists()) {
+                    await set(countersRef, {
+                        feeds: 0,
+                        pets: 0,
+                        totalProcessing: 0,
+                        uniqueTrainers: {}
+                    });
+                }
+
+                onValue(ref(db, 'counters'), (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        document.getElementById('feedCounter').innerText = data.feeds || 0;
+                        document.getElementById('petCounter').innerText = data.pets || 0;
+                        document.getElementById('totalProcessing').innerText =
+                            `${((data.feeds || 0) + (data.pets || 0))} WINSTON`;
+
+                        // Update trainer level if wallet is connected
+                        if (wallet && wallet.publicKey) {
+                            const userInteractions = (data.uniqueTrainers || {})[wallet.publicKey.toString()] || 0;
+                            updateTrainerLevel(userInteractions);
+                        }
+                    }
+                });
+            }
+
+            // Update counter when action is successful
+            async function updateCounter(action) {
+                const countersRef = ref(db, 'counters');
+                const snapshot = await get(countersRef);
+                const currentCounts = snapshot.val() || { feeds: 0, pets: 0 };
+
+                if (action === 'feed') {
+                    await update(countersRef, { feeds: (currentCounts.feeds || 0) + 1 });
+                } else if (action === 'pet') {
+                    await update(countersRef, { pets: (currentCounts.pets || 0) + 1 });
+                }
+            }
+
+            async function connectWallet() {
+                if (window.solana && window.solana.isPhantom) {
+                    wallet = window.solana;
+                    await wallet.connect();
+                    document.getElementById('walletAddress').innerText = `Wallet Address: ${wallet.publicKey}`;
+                    enableButtons();
+                } else {
+                    alert("Please install Phantom wallet.");
+                }
+            }
+
+            function enableButtons() {
+                document.getElementById("feedBtn").disabled = false;
+                document.getElementById("petBtn").disabled = false;
+            }
+
+            document.getElementById("connectWalletBtn").addEventListener("click", connectWallet);
+
+            async function findAssociatedTokenAddress(walletAddress, tokenMintAddress) {
+                return (await solanaWeb3.PublicKey.findProgramAddress(
+                    [
+                        walletAddress.toBuffer(),
+                        TOKEN_PROGRAM_ID.toBuffer(),
+                        tokenMintAddress.toBuffer(),
+                    ],
+                    ASSOCIATED_TOKEN_PROGRAM_ID
+                ))[0];
+            }
+
+            async function sendTransaction(action) {
+                try {
+                    if (!wallet || !wallet.publicKey) {
+                        alert("Please connect your wallet first");
+                        return;
+                    }
+
+                    const userATA = await findAssociatedTokenAddress(wallet.publicKey, TOKEN_MINT);
+                    const recipientATA = await findAssociatedTokenAddress(RECIPIENT, TOKEN_MINT);
+
+                    const userATAInfo = await connection.getAccountInfo(userATA);
+                    const recipientATAInfo = await connection.getAccountInfo(recipientATA);
+
+                    const transaction = new solanaWeb3.Transaction();
+
+                    if (!recipientATAInfo) {
+                        transaction.add(
+                            createAssociatedTokenAccountInstruction(
+                                wallet.publicKey,
+                                recipientATA,
+                                RECIPIENT,
+                                TOKEN_MINT
+                            )
+                        );
+                    }
+
+                    const transferInstruction = createTransferInstruction(
+                        userATA,
+                        recipientATA,
+                        wallet.publicKey,
+                        AMOUNT,
+                        [],
+                        TOKEN_PROGRAM_ID
+                    );
+
+                    transaction.add(transferInstruction);
+
+                    const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+                    transaction.recentBlockhash = blockhash;
+                    transaction.feePayer = wallet.publicKey;
+
+                    try {
+                        const signed = await wallet.signTransaction(transaction);
+                        const signature = await connection.sendRawTransaction(signed.serialize());
+
+                        const confirmation = await connection.confirmTransaction({
+                            signature,
+                            blockhash,
+                            lastValidBlockHeight
+                        });
+
+                        if (confirmation.value.err) {
+                            throw new Error('Transaction failed to confirm');
+                        }
+
+                        await updateProgress(action);
+                        await updateCounter(action);
+                        addSuccessAnimation(action);
+                        showPopupMessage(`${action} successful!`);
+                    } catch (err) {
+                        console.error("Transaction failed:", err);
+                        showPopupMessage(`${action} failed: ${err.message}`);
+                    }
+                } catch (error) {
+                    console.error(`${action} error:`, error);
+                    showPopupMessage(`${action} error: ${error.message}`);
+                }
+            }
+
+            // Add success animation to buttons
+            function addSuccessAnimation(action) {
+                const button = document.getElementById(`${action}Btn`);
+                button.classList.add('success-animation');
+                setTimeout(() => button.classList.remove('success-animation'), 500);
+            }
+
+            function createAssociatedTokenAccountInstruction(
+                payer,
+                associatedToken,
+                owner,
+                mint
+            ) {
+                return new solanaWeb3.TransactionInstruction({
+                    keys: [
+                        { pubkey: payer, isSigner: true, isWritable: true },
+                        { pubkey: associatedToken, isSigner: false, isWritable: true },
+                        { pubkey: owner, isSigner: false, isWritable: false },
+                        { pubkey: mint, isSigner: false, isWritable: false },
+                        { pubkey: solanaWeb3.SystemProgram.programId, isSigner: false, isWritable: false },
+                        { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+                        { pubkey: solanaWeb3.SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
+                    ],
+                    programId: ASSOCIATED_TOKEN_PROGRAM_ID,
+                    data: Buffer.from([]),
+                });
+            }
+
+            function createTransferInstruction(
+                source,
+                destination,
+                owner,
+                amount,
+                multiSigners = [],
+                programId = TOKEN_PROGRAM_ID
+            ) {
+                const dataLayout = {
+                    struct: [
+                        { u8: 'instruction' },
+                        { u64: 'amount' },
+                    ]
+                };
+
+                const keys = [
+                    { pubkey: source, isSigner: false, isWritable: true },
+                    { pubkey: destination, isSigner: false, isWritable: true },
+                    { pubkey: owner, isSigner: true, isWritable: false },
+                ];
+
+                const data = Buffer.alloc(9);
+                data.writeUInt8(3); // Transfer instruction
+                data.writeBigUInt64LE(BigInt(amount), 1);
+
+                return new solanaWeb3.TransactionInstruction({
+                    keys,
+                    programId,
+                    data,
+                });
+            }
+
+            // Enhanced popup message with emojis
+            function showPopupMessage(message) {
+                const popupContainer = document.getElementById("popupContainer");
+                const popupMessage = document.createElement("div");
+                popupMessage.className = "popup-message";
+
+                // Add emojis to success messages
+                if (message.includes('input data successful')) {
+                    message = '🍞 ' + message;
+                } else if (message.includes('optimize successful')) {
+                    message = '❤️ ' + message;
+                }
+
+                popupMessage.innerText = message;
+                popupContainer.appendChild(popupMessage);
+                setTimeout(() => popupMessage.remove(), 3000);
+            }
+
+            async function updateProgress(action) {
+                const incrementInMilliseconds = 15 * 60 * 1000;
+                const actionRef = ref(db, `progress/${action}`);
+                const currentTime = Date.now();
+
+                const data = await get(actionRef).then(snapshot => snapshot.val());
+                let remainingTime = 24 * 60 * 60 * 1000; // Default to 24 hours
+
+                if (data) {
+                    const timeElapsed = currentTime - data.lastUpdated;
+                    remainingTime = Math.max(0, data.remainingTime - timeElapsed);
+                    remainingTime = Math.min(remainingTime + incrementInMilliseconds, 24 * 60 * 60 * 1000);
+                }
+
+                await update(actionRef, {
+                    lastUpdated: currentTime,
+                    remainingTime
+                });
+            }
+
+function loadProgress() {
+    ["feed", "pet"].forEach(action => {
+        const actionRef = ref(db, `progress/${action}`);
+        onValue(actionRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                const progressBar = document.getElementById(`${action}Progress`);
+                const timeElapsed = Date.now() - data.lastUpdated;
+                const currentRemaining = Math.max(0, data.remainingTime - timeElapsed);
+
+                // This will make the green part show actual remaining time
+                const percentage = ((currentRemaining / (24 * 60 * 60 * 1000)) * 100);
+                progressBar.value = percentage;
+
+                const hoursLeft = Math.floor(currentRemaining / (60 * 60 * 1000));
+                const minutesLeft = Math.floor((currentRemaining % (60 * 60 * 1000)) / (60 * 1000));
+                document.getElementById(`${action}TimeLeft`).innerText = `${hoursLeft}h ${minutesLeft}m left`;
+                document.getElementById(`${action}TimeLeft2`).innerText = `${hoursLeft}h ${minutesLeft}m`;
+            }
+        });
+    });
+}
+            async function initializeProgressBars() {
+                const currentTime = Date.now();
+                const twelveHoursInMs = 12 * 60 * 60 * 1000;
+
+                const actions = ["feed", "pet"];
+                for (const action of actions) {
+                    const actionRef = ref(db, `progress/${action}`);
+                    const snapshot = await get(actionRef);
+                    if (!snapshot.exists()) {
+                        await set(actionRef, {
+                            lastUpdated: currentTime - twelveHoursInMs,
+                            remainingTime: 24 * 60 * 60 * 1000
+                        });
+                    }
+                }
+            }
+
+            document.getElementById("feedBtn").addEventListener("click", () => sendTransaction("feed"));
+            document.getElementById("petBtn").addEventListener("click", () => sendTransaction("pet"));
+
+            function setChickenAnimation(animationName) {
+                const modelViewer = document.getElementById("chickenViewer");
+                modelViewer.animationName = animationName;
+            }
+
+            document.getElementById("walkBtn").addEventListener("click", () => setChickenAnimation("walk01"));
+            document.getElementById("runBtn").addEventListener("click", () => setChickenAnimation("run01"));
+            document.getElementById("peckBtn").addEventListener("click", () => setChickenAnimation("idle01"));
+            document.getElementById("sitBtn").addEventListener("click", () => setChickenAnimation("chicken_squat_cycle01"));
+
+            function getRandomUsername() {
+                const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                let username = "User-";
+                for (let i = 0; i < 5; i++) {
+                    username += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return username;
+            }
+
+            function showRandomPopup() {
+                const actions = ["fed Winston", "pet Winston"];
+                const randomAction = actions[Math.floor(Math.random() * actions.length)];
+                const username = getRandomUsername();
+
+                const popupContainer = document.getElementById("popupContainer");
+
+                const popupMessage = document.createElement("div");
+                popupMessage.className = "popup-message";
+                popupMessage.innerText = `${username} ${randomAction}`;
+
+                popupContainer.appendChild(popupMessage);
+
+                setTimeout(() => {
+                    popupMessage.remove();
+                }, 2000);
+
+                const randomInterval = Math.floor(Math.random() * (8000 - 3000 + 1)) + 3000;
+                setTimeout(showRandomPopup, randomInterval);
+            }
+
+            // Initialize everything
+            loadProgress();
+            initializeProgressBars();
+            initializeCounters();
+            showRandomPopup();
+            // Initialize matrix background
+            createMatrixBackground();
+
+            // Window resize handler for matrix background
+            window.addEventListener('resize', () => {
+                const container = document.getElementById('matrixBg');
+                container.innerHTML = '';
+                createMatrixBackground();
+            });
+        </script>
+
+</body>
+
+</html>
