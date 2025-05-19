@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BonchiBot</title>
+    <title>PumpeeBot</title>
     <link rel="icon" type="image/png" href="https://cdn.prod.website-files.com/6740d85c4e3daeef29a89470/6824c39e55bb4cb2e790e069_bonchi%20pfp%20(2).png">
 
     <!-- Solana Wallet Adapter Scripts -->
@@ -755,22 +755,22 @@
         <!-- Wallet Connection Terminal -->
         <div class="terminal-window">
             <div class="terminal-header">
-                <div class="terminal-title">BONCHI BOT TERMINAL</div>
+                <div class="terminal-title">PUMPEE BOT TERMINAL</div>
             </div>
             <div class="button-group">
                 <button id="connectWalletBtn" class="action-btn">CONNECT WALLET TO PLAY</button>
                 <p id="walletAddress">Network Status: Disconnected</p>
                 <div id="trainerLevel" class="level-badge">Level 0: Neural Node Inactive</div>
                 <p id="tokenInfo" class="token-info">
-    Required Processing Power: 10,000 $BONCHI per operation<br>
-    <span class="ca-info">CA: <span id="copyCA" class="copy-text">5eKwhtZFwXBhyiZSnM9yxqRrXmsMSfZW8FWgncVBpump</span></span>
+    Required Processing Power: 10,000 $PUMPEE per operation<br>
+    <span class="ca-info">CA: <span id="copyCA" class="copy-text">TBA</span></span>
 </p>
 <div id="copyTooltip" class="copy-tooltip">Copied!</div>
             </div>
             <div class="terminal-info">
-                Bonchi Experiment 001<br>
-                Use $BONCHI tokens to train Bonchi<br>
-                If any bar reaches 0 after 24 hours & Bonchi's experiment is over but coin remains active.<br>
+                Pumpee Experiment 001<br>
+                Use $Pumpee tokens to train Pumpee<br>
+                If any bar reaches 0 after 24 hours & Pumpee's experiment is over but coin remains active.<br>
                 Each Interaction extends the progress for 15minutes
             </div>
         </div>
@@ -778,7 +778,7 @@
         <!-- AI Model Viewer Terminal -->
         <div class="terminal-window">
             <div class="terminal-header">
-                <div class="terminal-title">BONCHI MODEL VISUALIZATION</div>
+                <div class="terminal-title">PUMPEE MODEL VISUALIZATION</div>
             </div>
 
             <model-viewer id="bonkViewer" src="https://cdn.jsdelivr.net/gh/webdevgf1/bonkkk@master/animated_dog_shiba_inu.glb"
@@ -824,12 +824,12 @@
 <!-- Chat Terminal -->
 <div class="terminal-window">
     <div class="terminal-header">
-        <div class="terminal-title">BONCHI CHAT INTERFACE</div>
+        <div class="terminal-title">PUMPEE CHAT INTERFACE</div>
     </div>
     <div class="chat-container">
         <div id="chatMessages" class="chat-messages"></div>
         <div class="chat-input-container">
-            <input type="text" id="userInput" class="chat-input" placeholder="Talk to Bonchi..." />
+            <input type="text" id="userInput" class="chat-input" placeholder="Talk to Pumpee..." />
             <button id="sendMessageBtn" class="action-btn chat-send-btn">SEND</button>
         </div>
     </div>
@@ -874,7 +874,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadingSubtitle.textContent = '';
         
         // Start typing the title immediately
-        typeText(loadingTitle, "Bonchi Bot", 50, () => {
+        typeText(loadingTitle, "Pumpee Bot", 50, () => {
             // Add blinking cursor to title
             const cursor = document.createElement('span');
             cursor.className = 'cursor';
@@ -1305,7 +1305,7 @@ document.getElementById("sitBtn").addEventListener("click", () => setBonkAnimati
             }
 
             function showRandomPopup() {
-    const actions = ["gave Bonchi a treat", "pat Bonchi's head"];
+    const actions = ["gave Pumpee a treat", "pat Pumpee's head"];
     const randomAction = actions[Math.floor(Math.random() * actions.length)];
     const username = getRandomUsername();
 
@@ -1450,7 +1450,7 @@ userInput.addEventListener('keypress', (e) => {
 
 // Add an initial greeting from Bonchi after a short delay
 setTimeout(() => {
-    addMessage("Woof! I'm Bonchi the AI Shiba Inu! How can I help you today? *wags tail excitedly*", false);
+    addMessage("Woof! I'm Pumpee the AI Shiba Inu! How can I help you today? *wags tail excitedly*", false);
 }, 1000);
 
 document.addEventListener('DOMContentLoaded', () => {
